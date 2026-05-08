@@ -1,0 +1,1011 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Framework TIC — Teoria da Informação Cósmica</title>
+<meta name="description" content="Teoria da Informação Cósmica: um framework unificado conectando a Hipótese de Riemann, a simetria excepcional E₈ e a física da informação. Por Leandro de Oliveira."/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600&family=Fira+Code:wght@300;400;500&family=Jost:wght@200;300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#03030a;--surface:#07070f;--surface2:#0c0c18;--surface3:#111124;
+  --gold:#c9a84c;--gold-dim:#7a5f25;--gold-bright:#e8c870;
+  --blue:#5b8fd4;--blue-dim:#1e3a66;--blue-bright:#7aaff0;
+  --green:#4cb89a;--red:#c94c5a;
+  --text:#e2ddd4;--text-muted:#7a7590;--text-dim:#4a4560;
+  --border:rgba(201,168,76,.1);--border2:rgba(91,143,212,.1);
+  --glow:0 0 40px rgba(201,168,76,.07);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;font-size:16px}
+body{background:var(--bg);color:var(--text);font-family:'Jost',sans-serif;font-weight:300;line-height:1.7;overflow-x:hidden}
+
+/* NOISE */
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.035'/%3E%3C/svg%3E");background-size:180px;pointer-events:none;z-index:0;opacity:.6}
+
+/* GRID */
+.grid-bg{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:linear-gradient(rgba(201,168,76,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(201,168,76,.025) 1px,transparent 1px);
+  background-size:64px 64px}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:1.1rem 3rem;background:rgba(3,3,10,.9);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);transition:all .3s}
+.nav-logo{font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:600;color:var(--gold);letter-spacing:.04em;text-decoration:none;display:flex;align-items:center;gap:.6rem}
+.nav-logo .dot{width:6px;height:6px;background:var(--gold);border-radius:50%;display:inline-block;opacity:.6}
+.nav-logo span{color:var(--text-muted);font-weight:300}
+.nav-links{display:flex;gap:2rem;list-style:none;align-items:center}
+.nav-links a{font-size:.72rem;font-weight:400;letter-spacing:.16em;text-transform:uppercase;color:var(--text-muted);text-decoration:none;transition:color .2s;padding:.2rem 0;border-bottom:1px solid transparent}
+.nav-links a:hover{color:var(--gold);border-bottom-color:var(--gold)}
+.nav-links .btn-nav{background:var(--gold);color:#03030a;padding:.45rem 1.2rem;border:none;border-bottom:none;font-family:'Jost';font-size:.7rem;letter-spacing:.16em;cursor:pointer;text-decoration:none;transition:opacity .2s}
+.nav-links .btn-nav:hover{opacity:.85;border-bottom:none}
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:.3rem}
+.hamburger span{display:block;width:22px;height:1px;background:var(--text-muted);transition:all .3s}
+
+/* HERO */
+#home{position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:10rem 2rem 6rem}
+.hero-badge{display:inline-flex;align-items:center;gap:.7rem;border:1px solid var(--border);padding:.45rem 1.2rem;margin-bottom:2.5rem;font-family:'Fira Code',monospace;font-size:.65rem;letter-spacing:.2em;color:var(--gold);text-transform:uppercase;background:rgba(201,168,76,.04)}
+.hero-badge-dot{width:5px;height:5px;background:var(--gold);border-radius:50%;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(1.3)}}
+h1.hero-title{font-family:'Cormorant Garamond',serif;font-size:clamp(3.2rem,9vw,7rem);font-weight:300;line-height:1;color:#fff;margin-bottom:.5rem;letter-spacing:-.02em}
+h1.hero-title em{font-style:italic;color:var(--gold);font-weight:300}
+.hero-sub{font-family:'Cormorant Garamond',serif;font-size:clamp(.95rem,2vw,1.35rem);font-style:italic;color:var(--text-muted);margin-bottom:.8rem;font-weight:300;letter-spacing:.02em}
+.hero-equation{font-family:'Fira Code',monospace;font-size:clamp(.7rem,1.5vw,.9rem);color:var(--gold);opacity:.6;margin-bottom:3.5rem;letter-spacing:.05em}
+.hero-stats{display:flex;gap:0;justify-content:center;flex-wrap:wrap;margin-bottom:3.5rem;border:1px solid var(--border)}
+.hero-stat{text-align:center;padding:1.8rem 2.5rem;border-right:1px solid var(--border);position:relative}
+.hero-stat:last-child{border-right:none}
+.stat-num{font-family:'Cormorant Garamond',serif;font-size:2.8rem;font-weight:600;color:var(--gold);display:block;line-height:1}
+.stat-label{font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;color:var(--text-muted);margin-top:.4rem;display:block}
+.hero-actions{display:flex;gap:1rem;flex-wrap:wrap;justify-content:center}
+.btn{display:inline-flex;align-items:center;gap:.5rem;padding:.75rem 1.8rem;font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;text-decoration:none;font-family:'Jost';font-weight:400;transition:all .25s;cursor:pointer;border:none}
+.btn-gold{background:var(--gold);color:#03030a}
+.btn-gold:hover{background:var(--gold-bright)}
+.btn-outline{background:transparent;color:var(--text-muted);border:1px solid rgba(255,255,255,.1)}
+.btn-outline:hover{border-color:var(--gold);color:var(--gold)}
+.btn svg{width:14px;height:14px;fill:currentColor}
+.scroll-hint{position:absolute;bottom:2.5rem;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:.5rem;opacity:.35}
+.scroll-hint span{font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--text-muted)}
+.scroll-line{width:1px;height:40px;background:linear-gradient(var(--gold),transparent);animation:scrollDown 2s infinite}
+@keyframes scrollDown{0%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}51%{transform:scaleY(1);transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
+
+/* SECTIONS */
+section{position:relative;z-index:1}
+.container{max-width:1120px;margin:0 auto;padding:0 2.5rem}
+.section-wrap{padding:7rem 0}
+.sec-label{font-family:'Fira Code',monospace;font-size:.63rem;letter-spacing:.24em;text-transform:uppercase;color:var(--gold);display:block;margin-bottom:.9rem;opacity:.75}
+.sec-title{font-family:'Cormorant Garamond',serif;font-size:clamp(1.8rem,4vw,2.9rem);font-weight:300;line-height:1.15;color:#fff}
+.sec-title em{font-style:italic;color:var(--gold)}
+.sec-line{width:2.5rem;height:1px;background:linear-gradient(90deg,var(--gold),transparent);margin-top:1.2rem}
+.sec-intro{font-size:.93rem;color:var(--text-muted);max-width:600px;margin-top:1.2rem;line-height:1.8}
+.gold-hr{width:100%;height:1px;background:linear-gradient(90deg,transparent,var(--gold-dim),transparent);border:none;position:relative;z-index:1}
+
+/* ABOUT */
+#about{background:var(--surface)}
+.about-wrap{display:grid;grid-template-columns:1fr 420px;gap:5rem;align-items:start}
+.about-text p{font-size:.92rem;color:var(--text-muted);margin-bottom:1.1rem;line-height:1.8}
+.about-text p strong{color:var(--text);font-weight:400}
+.about-text .math-inline{font-family:'Fira Code',monospace;font-size:.78rem;color:var(--gold);background:rgba(201,168,76,.06);padding:.1rem .4rem}
+.profile-card{border:1px solid var(--border);background:var(--surface2);overflow:hidden;box-shadow:var(--glow)}
+.profile-header{background:linear-gradient(135deg,rgba(201,168,76,.1),rgba(201,168,76,.02));padding:2rem;border-bottom:1px solid var(--border);position:relative}
+.profile-header::before{content:'TIC';position:absolute;right:1.5rem;top:1rem;font-family:'Cormorant Garamond',serif;font-size:4rem;font-weight:700;color:rgba(201,168,76,.06);line-height:1}
+.profile-name{font-family:'Cormorant Garamond',serif;font-size:1.55rem;font-weight:600;color:#fff;margin-bottom:.25rem}
+.profile-role{font-size:.7rem;letter-spacing:.15em;text-transform:uppercase;color:var(--gold)}
+.profile-body{padding:1.5rem 2rem}
+.profile-row{display:flex;gap:.7rem;align-items:flex-start;margin-bottom:.85rem;font-size:.83rem;color:var(--text-muted)}
+.profile-row .icon{color:var(--gold);font-family:'Fira Code',monospace;font-size:.65rem;min-width:1rem;margin-top:.2rem;flex-shrink:0}
+.profile-row a{color:var(--blue);text-decoration:none;font-family:'Fira Code',monospace;font-size:.73rem}
+.profile-row a:hover{color:var(--gold)}
+.profile-tags{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:1.2rem;padding-top:1.2rem;border-top:1px solid var(--border)}
+.ptag{font-family:'Fira Code',monospace;font-size:.62rem;border:1px solid var(--border);padding:.2rem .55rem;color:var(--text-dim);letter-spacing:.06em}
+
+/* THEORIES */
+#theories{background:var(--bg)}
+.theories-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem;margin-top:3.5rem}
+.theory-card{border:1px solid var(--border);background:var(--surface);padding:2rem;transition:all .3s;position:relative;overflow:hidden;cursor:default}
+.theory-card::after{content:'';position:absolute;bottom:0;left:0;width:100%;height:2px;background:var(--gold);transform:scaleX(0);transform-origin:left;transition:transform .3s}
+.theory-card:hover{border-color:rgba(201,168,76,.3);transform:translateY(-4px);box-shadow:0 12px 40px rgba(0,0,0,.4)}
+.theory-card:hover::after{transform:scaleX(1)}
+.theory-card.is-blue::after{background:var(--blue)}
+.theory-card.is-blue:hover{border-color:rgba(91,143,212,.3)}
+.theory-card.is-green::after{background:var(--green)}
+.theory-card.is-green:hover{border-color:rgba(76,184,154,.3)}
+.theory-series{font-family:'Fira Code',monospace;font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:1rem;display:block;opacity:.8}
+.theory-card.is-blue .theory-series{color:var(--blue)}
+.theory-card.is-green .theory-series{color:var(--green)}
+.theory-name{font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:600;color:#fff;line-height:1.25;margin-bottom:.9rem}
+.theory-desc{font-size:.82rem;color:var(--text-muted);line-height:1.75;margin-bottom:1.4rem}
+.theory-pills{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:1.4rem}
+.pill{font-family:'Fira Code',monospace;font-size:.58rem;letter-spacing:.06em;border:1px solid var(--border);padding:.2rem .55rem;color:var(--text-dim)}
+.theory-card.is-blue .pill{border-color:var(--border2)}
+.theory-meta{font-size:.75rem;color:var(--text-muted);border-top:1px solid var(--border);padding-top:1rem;display:flex;flex-direction:column;gap:.35rem}
+.theory-meta strong{color:var(--gold)}
+.theory-card.is-blue .theory-meta strong{color:var(--blue)}
+.theory-card.is-green .theory-meta strong{color:var(--green)}
+
+/* BIG THEORY — spans 2 cols */
+.theory-card.is-wide{grid-column:span 2}
+
+/* INVARIANTS */
+.invariants{background:var(--surface2);border:1px solid var(--border);display:grid;grid-template-columns:repeat(5,1fr);margin-top:2.5rem}
+.inv-item{padding:1.5rem;text-align:center;border-right:1px solid var(--border);position:relative}
+.inv-item:last-child{border-right:none}
+.inv-val{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:600;color:var(--gold);display:block;line-height:1.1;margin-bottom:.3rem}
+.inv-name{font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;color:var(--text-muted);display:block}
+.inv-sub{font-family:'Fira Code',monospace;font-size:.6rem;color:var(--text-dim);margin-top:.3rem;display:block}
+
+/* PUBLICATIONS */
+#publications{background:var(--surface)}
+.pub-tabs{display:flex;gap:0;margin-bottom:2.5rem;border:1px solid var(--border);overflow:hidden}
+.pub-tab{background:transparent;border:none;color:var(--text-muted);font-family:'Jost';font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;padding:.85rem 1.5rem;cursor:pointer;border-right:1px solid var(--border);transition:all .2s;font-weight:400}
+.pub-tab:last-child{border-right:none}
+.pub-tab.active{background:var(--gold);color:#03030a;font-weight:500}
+.pub-tab.active-blue{background:var(--blue);color:#fff}
+.pub-series-panel{display:none}
+.pub-series-panel.active{display:block}
+.pub-series-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.2rem}
+.pub-series-name{font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:600;color:var(--gold)}
+.pub-series-name.blue{color:var(--blue)}
+.pub-count-badge{font-family:'Fira Code',monospace;font-size:.62rem;border:1px solid var(--border);padding:.2rem .65rem;color:var(--text-muted)}
+.pub-list{display:flex;flex-direction:column;gap:.6rem}
+.pub-item{display:grid;grid-template-columns:2rem 1fr auto;gap:1.2rem;align-items:center;padding:1.1rem 1.4rem;border:1px solid var(--border);background:var(--surface2);text-decoration:none;color:inherit;transition:all .2s}
+.pub-item:hover{border-color:var(--gold);background:rgba(201,168,76,.03)}
+.pub-item.blue:hover{border-color:var(--blue);background:rgba(91,143,212,.03)}
+.pub-n{font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:600;color:var(--gold);line-height:1}
+.pub-item.blue .pub-n{color:var(--blue)}
+.pub-title{font-size:.87rem;color:var(--text);line-height:1.45}
+.pub-title small{display:block;font-family:'Fira Code',monospace;font-size:.62rem;color:var(--text-muted);margin-top:.2rem}
+.pub-arrow{color:var(--gold);font-size:1rem;opacity:0;transition:opacity .2s,transform .2s}
+.pub-item.blue .pub-arrow{color:var(--blue)}
+.pub-item:hover .pub-arrow{opacity:1;transform:translateX(3px)}
+
+/* PREDICTIONS */
+#predictions{background:var(--bg)}
+.pred-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem;margin-top:3rem;margin-bottom:3.5rem}
+.pred-sum-card{border:1px solid var(--border);background:var(--surface);padding:2rem;position:relative;overflow:hidden}
+.pred-sum-card.blue{border-color:var(--border2)}
+.pred-sum-bg{position:absolute;right:-1rem;bottom:-1rem;font-family:'Cormorant Garamond',serif;font-size:7rem;font-weight:700;color:rgba(201,168,76,.04);line-height:1;pointer-events:none}
+.pred-sum-card.blue .pred-sum-bg{color:rgba(91,143,212,.04)}
+.pred-sum-range{font-family:'Fira Code',monospace;font-size:.62rem;letter-spacing:.15em;color:var(--gold);display:block;margin-bottom:.5rem}
+.pred-sum-card.blue .pred-sum-range{color:var(--blue)}
+.pred-sum-title{font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:600;color:#fff;margin-bottom:.8rem}
+.pred-sum-num{font-family:'Cormorant Garamond',serif;font-size:3rem;font-weight:300;color:var(--gold);line-height:1;margin-bottom:.3rem}
+.pred-sum-card.blue .pred-sum-num{color:var(--blue)}
+.pred-sum-unit{font-size:.65rem;letter-spacing:.14em;text-transform:uppercase;color:var(--text-muted);display:block;margin-bottom:1.2rem}
+.pred-examples{list-style:none;display:flex;flex-direction:column;gap:.5rem}
+.pred-examples li{font-size:.78rem;color:var(--text-muted);display:flex;gap:.5rem;padding-top:.5rem;border-top:1px solid var(--border)}
+.pred-examples li::before{content:'→';color:var(--gold);flex-shrink:0;font-family:'Fira Code',monospace}
+.pred-sum-card.blue .pred-examples li::before{color:var(--blue)}
+
+/* PRED TABLE */
+.pred-table-wrap{overflow-x:auto}
+.pred-table{width:100%;border-collapse:collapse;font-size:.81rem}
+.pred-table th{font-family:'Fira Code',monospace;font-size:.6rem;letter-spacing:.15em;text-transform:uppercase;color:var(--text-muted);padding:.8rem 1rem;text-align:left;border-bottom:1px solid var(--border);background:var(--surface2);font-weight:400}
+.pred-table td{padding:.85rem 1rem;border-bottom:1px solid rgba(255,255,255,.04);vertical-align:top;color:var(--text-muted)}
+.pred-table tr:hover td{background:rgba(255,255,255,.015)}
+.pred-id{font-family:'Fira Code',monospace;font-size:.7rem;color:var(--gold);white-space:nowrap}
+.pred-id.blue{color:var(--blue)}
+.pred-desc{color:var(--text);font-size:.83rem}
+.pred-origin{font-family:'Fira Code',monospace;font-size:.65rem;color:var(--text-dim)}
+.pred-test{font-size:.72rem;color:var(--text-muted)}
+.pred-tag{display:inline-block;font-family:'Fira Code',monospace;font-size:.58rem;border:1px solid var(--border);padding:.15rem .45rem;color:var(--text-dim);white-space:nowrap}
+
+/* EXPERIMENTS */
+#experiments{background:var(--surface)}
+.exp-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.2rem;margin-top:3rem}
+.exp-card{border:1px solid var(--border);background:var(--surface2);padding:1.8rem}
+.exp-facility{font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:600;color:#fff;margin-bottom:.3rem}
+.exp-type{font-family:'Fira Code',monospace;font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin-bottom:.9rem;display:block}
+.exp-desc{font-size:.82rem;color:var(--text-muted);line-height:1.7;margin-bottom:1rem}
+.exp-preds{font-family:'Fira Code',monospace;font-size:.65rem;color:var(--blue);border-top:1px solid var(--border);padding-top:.8rem}
+
+/* GRH SECTION */
+#grh{background:linear-gradient(180deg,var(--bg) 0%,#070714 100%)}
+.grh-box{border:1px solid var(--border);background:var(--surface2);padding:3.5rem;position:relative;overflow:hidden;margin-top:3rem}
+.grh-box::before{content:'GRH';position:absolute;right:-1rem;bottom:-2rem;font-family:'Cormorant Garamond',serif;font-size:12rem;font-weight:700;color:rgba(201,168,76,.03);line-height:1;pointer-events:none;letter-spacing:-.05em}
+.grh-theorem{font-family:'Fira Code',monospace;font-size:.72rem;line-height:2;color:var(--text-muted);margin-bottom:2rem;padding:1.5rem;background:var(--surface3);border-left:2px solid var(--gold)}
+.grh-theorem .hi{color:var(--gold)}
+.grh-pillars{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-top:2rem}
+.grh-pillar{padding:1.5rem;border:1px solid var(--border);background:var(--surface);text-align:center}
+.grh-pillar-num{font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:600;color:var(--gold);display:block;line-height:1;margin-bottom:.5rem}
+.grh-pillar-name{font-size:.72rem;color:var(--text-muted);letter-spacing:.05em;line-height:1.5}
+
+/* TIMELINE */
+#timeline{background:var(--surface)}
+.timeline-list{display:flex;flex-direction:column;gap:0;margin-top:3rem;border-left:1px solid var(--border);padding-left:2.5rem;margin-left:1rem}
+.tl-item{position:relative;padding-bottom:2.5rem}
+.tl-item:last-child{padding-bottom:0}
+.tl-dot{position:absolute;left:-2.96rem;top:.3rem;width:10px;height:10px;border-radius:50%;background:var(--gold);border:2px solid var(--bg)}
+.tl-item.blue .tl-dot{background:var(--blue)}
+.tl-date{font-family:'Fira Code',monospace;font-size:.63rem;letter-spacing:.14em;color:var(--gold);margin-bottom:.3rem;display:block}
+.tl-item.blue .tl-date{color:var(--blue)}
+.tl-title{font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:600;color:#fff;margin-bottom:.4rem}
+.tl-desc{font-size:.82rem;color:var(--text-muted);line-height:1.7}
+.tl-doi{font-family:'Fira Code',monospace;font-size:.62rem;color:var(--text-dim);margin-top:.4rem;display:block}
+
+/* CONTACT */
+#contact{background:var(--bg)}
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:4rem;margin-top:3rem}
+.contact-block h3{font-family:'Cormorant Garamond',serif;font-size:1.35rem;font-weight:600;color:#fff;margin-bottom:.8rem}
+.contact-block p{font-size:.88rem;color:var(--text-muted);margin-bottom:1.5rem;line-height:1.8}
+.contact-links{display:flex;flex-direction:column;gap:.6rem}
+.clink{display:flex;align-items:center;gap:1rem;padding:1rem 1.4rem;border:1px solid var(--border);background:var(--surface);text-decoration:none;color:var(--text);font-size:.85rem;transition:all .2s}
+.clink:hover{border-color:var(--gold);color:var(--gold)}
+.clink-icon{font-family:'Fira Code',monospace;font-size:.65rem;color:var(--gold);min-width:1rem;flex-shrink:0}
+.dois-box{border:1px solid var(--border);background:var(--surface);padding:2rem}
+.dois-box h4{font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:600;color:var(--gold);margin-bottom:1.2rem;padding-bottom:.8rem;border-bottom:1px solid var(--border)}
+.doi-row{display:flex;justify-content:space-between;align-items:center;padding:.55rem 0;border-bottom:1px solid rgba(255,255,255,.04);font-family:'Fira Code',monospace;font-size:.65rem;text-decoration:none;transition:color .2s;gap:.5rem}
+.doi-row:last-child{border-bottom:none}
+.doi-row:hover{color:var(--gold)}
+.doi-row .lbl{color:var(--text-muted)}
+.doi-row .val{color:var(--blue-bright);text-align:right}
+
+/* FOOTER */
+footer{position:relative;z-index:1;background:var(--bg);border-top:1px solid var(--border);padding:2.5rem 0;text-align:center}
+.footer-text{font-size:.72rem;color:var(--text-muted);letter-spacing:.06em;line-height:2}
+.footer-text a{color:var(--gold);text-decoration:none}
+
+/* ANIM */
+@keyframes fadeUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
+.hero-badge{animation:fadeUp .7s both}
+h1.hero-title{animation:fadeUp .7s .12s both}
+.hero-sub{animation:fadeUp .7s .22s both}
+.hero-equation{animation:fadeUp .7s .32s both}
+.hero-stats{animation:fadeUp .7s .42s both}
+.hero-actions{animation:fadeUp .7s .52s both}
+.scroll-hint{animation:fadeUp .7s .7s both}
+
+/* MOBILE */
+@media(max-width:900px){
+  nav{padding:1rem 1.5rem}
+  .nav-links{display:none;position:absolute;top:100%;left:0;right:0;background:rgba(3,3,10,.97);flex-direction:column;padding:1.5rem;gap:0;border-bottom:1px solid var(--border)}
+  .nav-links.open{display:flex}
+  .nav-links li{border-bottom:1px solid var(--border)}
+  .nav-links a{display:block;padding:1rem .5rem}
+  .hamburger{display:flex}
+  .about-wrap{grid-template-columns:1fr}
+  .theories-grid{grid-template-columns:1fr}
+  .theory-card.is-wide{grid-column:span 1}
+  .invariants{grid-template-columns:repeat(3,1fr)}
+  .inv-item:nth-child(3){border-right:none}
+  .pred-summary{grid-template-columns:1fr}
+  .grh-pillars{grid-template-columns:repeat(2,1fr)}
+  .contact-grid{grid-template-columns:1fr}
+  .hero-stats{grid-template-columns:1fr 1fr}
+  .pub-tabs{flex-wrap:wrap}
+}
+@media(max-width:600px){
+  .pub-item{grid-template-columns:auto 1fr auto}
+  .invariants{grid-template-columns:repeat(2,1fr)}
+  .hero-stats .hero-stat{padding:1.2rem 1.5rem}
+}
+</style>
+</head>
+<body>
+<div class="grid-bg"></div>
+
+<!-- NAV -->
+<nav id="navbar">
+  <a href="#home" class="nav-logo"><span class="dot"></span>TIC <span>Framework</span></a>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="#about">Sobre</a></li>
+    <li><a href="#theories">Teorias</a></li>
+    <li><a href="#publications">Publicações</a></li>
+    <li><a href="#predictions">Predições</a></li>
+    <li><a href="#experiments">Experimentos</a></li>
+    <li><a href="#grh">HRG</a></li>
+    <li><a href="#contact">Contato</a></li>
+    <li><a href="index.html" style="font-family:'Fira Code',monospace;font-size:.65rem;letter-spacing:.12em;color:var(--text-muted);text-decoration:none;border:1px solid var(--border);padding:.3rem .7rem;">EN</a></li><li><a href="https://zenodo.org" target="_blank" class="btn-nav">Zenodo ↗</a></li>
+  </ul>
+  <div class="hamburger" id="hamburger" onclick="toggleMenu()">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="home">
+  <div class="container">
+    <div class="hero-badge">
+      <span class="hero-badge-dot"></span>
+      www.cit-framework.com &nbsp;·&nbsp; Pesquisa Ativa 2025–2026
+    </div>
+    <h1 class="hero-title">Teoria da<br/><em>Informação Cósmica</em></h1>
+    <p class="hero-sub">Um framework unificado conectando a Hipótese de Riemann,<br/>simetrias excepcionais e a física da informação.</p>
+    <p class="hero-equation">g<sub>ij</sub>(s) = ∂<sub>i</sub>∂<sub>j</sub>(−log|ζ(s)|) &nbsp;·&nbsp; t* ≈ 5.5612 &nbsp;·&nbsp; Δ ≈ 0.39 meV &nbsp;·&nbsp; E₈ ↔ 248 dof</p>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <span class="stat-num" data-target="17">0</span>
+        <span class="stat-label">Artigos Publicados</span>
+      </div>
+      <div class="hero-stat">
+        <span class="stat-num" data-target="56">0</span>
+        <span class="stat-label">Predições Falsificáveis</span>
+      </div>
+      <div class="hero-stat">
+        <span class="stat-num">5</span>
+        <span class="stat-label">Séries Teóricas</span>
+      </div>
+      <div class="hero-stat">
+        <span class="stat-num">E₈</span>
+        <span class="stat-label">Simetria Excepcional</span>
+      </div>
+    </div>
+    <div class="hero-actions">
+      <a href="#theories" class="btn btn-gold">Explorar o Framework</a>
+      <a href="#publications" class="btn btn-outline">Ver Todas as Publicações</a>
+    </div>
+  </div>
+  <div class="scroll-hint">
+    <span>Rolar</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+<hr class="gold-hr"/>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="container section-wrap">
+    <div class="about-wrap">
+      <div>
+        <div>
+          <span class="sec-label">// Sobre o Framework</span>
+          <h2 class="sec-title">Onde a Teoria dos Números<br/>Encontra a <em>Física</em></h2>
+          <div class="sec-line"></div>
+        </div>
+        <br/>
+        <div class="about-text">
+          <p>O <strong>Framework TIC/CIT</strong> (Teoria da Informação Cósmica / Teoria da Informação Cósmica) propõe que a realidade física é um <strong>substrato de informação</strong> regido pela estrutura espectral da função zeta de Riemann ζ(s).</p>
+          <p>O objeto fundamental é a métrica pseudo-Riemanniana <span class="math-inline">g<sub>ij</sub> = ∂<sub>i</sub>∂<sub>j</sub>(−log|ζ(s)|)</span>, que codifica a estrutura analítica de ζ(s) na geometria do espaço-tempo, força assinatura Lorentziana e identifica o espectro do d'Alembertiano associado <span class="math-inline">□<sub>g</sub></span> com as partes imaginárias dos zeros não-triviais <span class="math-inline">{t²<sub>n</sub>}</span>.</p>
+          <p>O framework é estendido à álgebra excepcional via a <strong>álgebra de octonions dependente de zeta</strong> <span class="math-inline">O<sub>ζ</sub> = O ⊗ M<sub>ζ</sub></span>. A construção de Tits sobre <span class="math-inline">O<sub>ζ</sub></span> estabelece um isomorfismo estrutural entre a álgebra de Lie excepcional e₈ (dim 248) e os graus de liberdade do substrato de informação.</p>
+          <p>A <strong>Hipótese de Riemann Generalizada</strong> emerge como condição necessária e suficiente para estabilidade termodinâmica e conservação unitária da informação — provada via quatro pilares analíticos: auto-adjunticidade, confinamento termodinâmico, isomorfismo estrutural e estabilidade espectral sob multiplicidade de zeros.</p>
+          <p>Todas as predições são quantitativas e falsificáveis em instalações experimentais atuais ou de curto prazo: <strong>CERN/LHC</strong>, <strong>CMB-S4</strong>, <strong>IAXO</strong>, <strong>AION</strong>, <strong>MAGIS-100</strong>, <strong>Belle II</strong>, and atomic clock networks.</p>
+        </div>
+      </div>
+      <div>
+        <div class="profile-card">
+          <div class="profile-header">
+            <div class="profile-name">Leandro de Oliveira</div>
+            <div class="profile-role">Físico Teórico &amp; Professor de Matemática</div>
+          </div>
+          <div class="profile-body">
+            <div class="profile-row"><span class="icon">◈</span><span>Colégio Estadual Cecília Meireles — SEED/PR, Araucária, Paraná, Brazil</span></div>
+            <div class="profile-row"><span class="icon">◈</span><span>Escola Municipal Prof.ª Terezinha M. Theobald, Araucária, PR</span></div>
+            <div class="profile-row"><span class="icon">◈</span><span>Mestre — MUST University (rec. UFAL, janeiro de 2026)</span></div>
+            <div class="profile-row"><span class="icon">◈</span><span>Especialização (PDE/EAD) — Universidade Estadual de Londrina (UEL)</span></div>
+            <div class="profile-row"><span class="icon">◈</span><span>Pré-projeto doutoral — PPGECT/UFPR<br/>Foco: Literacia em IA e interação humano-IA na educação</span></div>
+            <div class="profile-row"><span class="icon">◈</span>
+              <span>ORCID: <a href="https://orcid.org/0009-0008-0008-4239" target="_blank">0009-0008-0008-4239</a></span>
+            </div>
+            <div class="profile-row"><span class="icon">◈</span>
+              <span>Email: <a href="mailto:leandro.oliveira@seed.pr.gov.br">leandro.oliveira@seed.pr.gov.br</a></span>
+            </div>
+            <div class="profile-tags">
+              <span class="ptag">Geometria Espectral</span>
+              <span class="ptag">Zeta de Riemann</span>
+              <span class="ptag">Octonions</span>
+              <span class="ptag">E₈</span>
+              <span class="ptag">Setor Escuro</span>
+              <span class="ptag">QFT</span>
+              <span class="ptag">Literacia em IA</span>
+              <span class="ptag">Educação Matemática</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<hr class="gold-hr"/>
+
+<!-- THEORIES -->
+<section id="theories">
+  <div class="container section-wrap">
+    <span class="sec-label">// Frentes de Pesquisa</span>
+    <h2 class="sec-title">Cinco Fronteiras <em>Teóricas</em></h2>
+    <div class="sec-line"></div>
+
+    <div class="theories-grid">
+      <!-- TIC/CIT -->
+      <div class="theory-card is-wide">
+        <span class="theory-series">Série I · TIC/CIT · Framework Fundacional</span>
+        <h3 class="theory-name">Teoria da Informação Cósmica</h3>
+        <p class="theory-desc">A série fundacional que estabelece a realidade física como um substrato de informação regido pela função zeta de Riemann. Introduz 6 elementos fantasmas com Lagrangianas completas — os graus de liberdade do "setor escuro" previstos pela álgebra TIC. O escalar Temporium Σ medeia o acoplamento entre o setor geométrico-espectral e a física observável via Lagrangiana portal. O framework corrige 19 erros de formulações anteriores e gera 39 predições falsificáveis abrangendo fenomenologia de matéria escura, setor de neutrinos e cosmologia de precisão.</p>
+        <div class="theory-pills">
+          <span class="pill">Information Substrate</span>
+          <span class="pill">Temporium Scalar Σ</span>
+          <span class="pill">6 Phantom Elements</span>
+          <span class="pill">Setor Escuro Portal</span>
+          <span class="pill">NFW Halo</span>
+          <span class="pill">BTFR Slope</span>
+          <span class="pill">Métrica Zeta g<sub>ij</sub></span>
+        </div>
+        <div class="theory-meta">
+          <span><strong>5 artigos</strong> · DOIs: 10.5281/zenodo.19546034 through 19645488</span>
+          <span>39 predictions · 6 phantom elements with Lagrangians · 19 corrected errors</span>
+        </div>
+      </div>
+
+      <!-- RIEMANN -->
+      <div class="theory-card is-blue">
+        <span class="theory-series">Série II · Riemann · Geométrico-Espectral</span>
+        <h3 class="theory-name">Hipótese de Riemann Geométrico-Espectral</h3>
+        <p class="theory-desc">Métrica Lorentziana na faixa crítica. A constante nula t* ≈ 5,5612, verificada via PSLQ, atua como normalização intrínseca do substrato de informação, mapeando para T<sub>QCD</sub> ≈ 150 MeV por calibração térmica. A Hipótese de Riemann é reinterpretada como atrator geométrico: a linha crítica ℜ(s) = ½ é o mínimo termodinâmico global da energia livre F<sub>L</sub>(σ).</p>
+        <div class="theory-pills">
+          <span class="pill">Lorentzian Metric</span>
+          <span class="pill">t* ≈ 5.5612 (PSLQ)</span>
+          <span class="pill">Deift–Zhou</span>
+          <span class="pill">Maass Eigenmodes</span>
+          <span class="pill">Selberg Class</span>
+        </div>
+        <div class="theory-meta">
+          <strong>9 artigos</strong> (P1–P9) · Critical line as thermodynamic attractor
+        </div>
+      </div>
+
+      <!-- OCTONIONIC -->
+      <div class="theory-card">
+        <span class="theory-series">Série III · Octoniônica</span>
+        <h3 class="theory-name">Estrutura Octoniônica &amp; E₈</h3>
+        <p class="theory-desc">Álgebra de octonions dependente de zeta O<sub>ζ</sub> = O ⊗ M<sub>ζ</sub>. A construção de Tits mapeia E₈ (dim 248) para os graus de liberdade do substrato de informação. A falha de divisão em O<sub>ζ</sub> ocorre precisamente nos zeros não-triviais ρ<sub>n</sub>. Gap de massa Δ ≈ 0,39 meV via confinamento espectral. Reconstrução de Osterwalder–Schrader estabelecida.</p>
+        <div class="theory-pills">
+          <span class="pill">Octonions O<sub>ζ</sub></span>
+          <span class="pill">E₈ (dim 248)</span>
+          <span class="pill">Tits Construction</span>
+          <span class="pill">Gap de Massa Δ≈0.39 meV</span>
+          <span class="pill">OS Reconstruction</span>
+          <span class="pill">GRH via Stability</span>
+        </div>
+        <div class="theory-meta">
+          <strong>1 artigo</strong> · 11 novas predições (#46–56) · Lagrangiana de calibre SU(3)<br/>
+          <span style="color:var(--text-dim);font-family:'Fira Code',monospace;font-size:.62rem">10.5281/zenodo.19703197</span>
+        </div>
+      </div>
+
+      <!-- TAH -->
+      <div class="theory-card is-blue">
+        <span class="theory-series">Série IV · HAT · IA &amp; Cognição</span>
+        <h3 class="theory-name">Hipótese de Atenção Temporium</h3>
+        <p class="theory-desc">Confinamento espectral como mecanismo universal de processamento de informação. O mesmo gap de massa Δ que estabiliza o vácuo quântico governa a esparsidade de atenção em redes neurais, limiares de correção de erros quânticos e eficiência de inferência em IA. Navegação de fase θ = t₁/t* ≈ 2,5416 como razão cognitiva fundamental. Falsificável por ablações em benchmarks de LLMs e experimentos de circuitos quânticos.</p>
+        <div class="theory-pills">
+          <span class="pill">Attention Sparsity</span>
+          <span class="pill">θ ≈ 2.5416</span>
+          <span class="pill">Spectral Rigidity</span>
+          <span class="pill">QEC Threshold</span>
+          <span class="pill">LLM Benchmarks</span>
+        </div>
+        <div class="theory-meta">
+          <strong>1 artigo</strong> · Une física, IA e ciência cognitiva<br/>
+          <span style="color:var(--text-dim);font-family:'Fira Code',monospace;font-size:.62rem">10.5281/zenodo.19990956</span>
+        </div>
+      </div>
+
+      <!-- EIGHT ORANGES -->
+      <div class="theory-card">
+        <span class="theory-series">Série V · Empacotamento de Esferas</span>
+        <h3 class="theory-name">8 Laranjas &amp; o Substrato de Informação</h3>
+        <p class="theory-desc">A função mágica de Viazovska (resultado da Medalha Fields 2016) é a projeção euclidiana do núcleo reprodutor de Bergman–Selberg do TIC/CIT via a projeção conforme Π<sub>C</sub>. As condições de interpolação f(√2k) = δ<sub>k,0</sub> são equivalentes à ortogonalidade em L²<sub>w</sub>(C). O empacotamento ótimo de esferas em ℝ⁸ emerge como necessidade termodinâmica: o gap Δ impede modos sub-críticos, saturando a cota de Cohn–Elkies.</p>
+        <div class="theory-pills">
+          <span class="pill">E₈ Lattice</span>
+          <span class="pill">Viazovska Function</span>
+          <span class="pill">Bergman–Selberg</span>
+          <span class="pill">Cohn–Elkies Bound</span>
+          <span class="pill">π⁴/384 density</span>
+        </div>
+        <div class="theory-meta">
+          <strong>1 artigo</strong> · Empacotamento de esferas como assinatura de estabilidade
+        </div>
+      </div>
+    </div>
+
+    <!-- INVARIANTS -->
+    <div class="invariants">
+      <div class="inv-item">
+        <span class="inv-val">t* ≈ 5.5612</span>
+        <span class="inv-name">Ponto Nulo Geométrico</span>
+        <span class="inv-sub">Verificado via PSLQ · T<sub>QCD</sub> ≈ 150 MeV</span>
+      </div>
+      <div class="inv-item">
+        <span class="inv-val">Δ ≈ 0.39 meV</span>
+        <span class="inv-name">Gap de Massa</span>
+        <span class="inv-sub">Confinamento espectral t₁ − t*</span>
+      </div>
+      <div class="inv-item">
+        <span class="inv-val">θ ≈ 2.5416</span>
+        <span class="inv-name">Navegação de Fase</span>
+        <span class="inv-sub">Razão fundamental t₁/t*</span>
+      </div>
+      <div class="inv-item">
+        <span class="inv-val">ΔN<sub>eff</sub> ≈ 0.21</span>
+        <span class="inv-name">Graus de Lib. Rel. Efetivos</span>
+        <span class="inv-sub">Testável no CMB-S4</span>
+      </div>
+      <div class="inv-item">
+        <span class="inv-val">248</span>
+        <span class="inv-name">Dimensão de E₈</span>
+        <span class="inv-sub">4 subespaços → graus de lib. físicos</span>
+      </div>
+    </div>
+  </div>
+</section>
+<hr class="gold-hr"/>
+
+<!-- PUBLICATIONS -->
+<section id="publications">
+  <div class="container section-wrap">
+    <span class="sec-label">// Repositório Aberto Zenodo</span>
+    <h2 class="sec-title">Todas as <em>Publicações</em></h2>
+    <div class="sec-line"></div>
+    <p class="sec-intro">Todos os artigos são de acesso aberto no Zenodo. Os links DOI abrem o texto completo. Endosso arXiv pendente em math-ph e math.NT.</p>
+
+    <br/><br/>
+    <div class="pub-tabs">
+      <button class="pub-tab active" onclick="showTab('tic',this)">TIC / CIT</button>
+      <button class="pub-tab" onclick="showTab('riemann',this)">Série Riemann</button>
+      <button class="pub-tab" onclick="showTab('standalone',this)">Artigos Avulsos</button>
+    </div>
+
+    <!-- TIC -->
+    <div class="pub-series-panel active" id="tab-tic">
+      <div class="pub-series-header">
+        <span class="pub-series-name">Series I — Teoria da Informação Cósmica (TIC/CIT)</span>
+        <span class="pub-count-badge">5 artigos</span>
+      </div>
+      <div class="pub-list">
+        <a class="pub-item" href="https://doi.org/10.5281/zenodo.19546034" target="_blank">
+          <span class="pub-n">1</span>
+          <span class="pub-title">Fundamentos da Teoria da Informação Cósmica — O Substrato de Informação e a Métrica Zeta<small>10.5281/zenodo.19546034</small></span>
+          <span class="pub-arrow">→</span>
+        </a>
+        <a class="pub-item" href="https://doi.org/10.5281/zenodo.19600122" target="_blank">
+          <span class="pub-n">2</span>
+          <span class="pub-title">Elementos Fantasmas e Formulação Lagrangiana no TIC<small>10.5281/zenodo.19600122</small></span>
+          <span class="pub-arrow">→</span>
+        </a>
+        <a class="pub-item" href="https://doi.org/10.5281/zenodo.19600582" target="_blank">
+          <span class="pub-n">3</span>
+          <span class="pub-title">Fenomenologia do Setor Escuro e Acoplamentos Portal<small>10.5281/zenodo.19600582</small></span>
+          <span class="pub-arrow">→</span>
+        </a>
+        <a class="pub-item" href="https://doi.org/10.5281/zenodo.19644982" target="_blank">
+          <span class="pub-n">4</span>
+          <span class="pub-title">Predições e Assinaturas Observacionais do Framework TIC<small>10.5281/zenodo.19644982</small></span>
+          <span class="pub-arrow">→</span>
+        </a>
+        <a class="pub-item" href="https://doi.org/10.5281/zenodo.19645488" target="_blank">
+          <span class="pub-n">5</span>
+          <span class="pub-title">Correções de Erros, Refinamentos e Síntese Unificada TIC<small>10.5281/zenodo.19645488</small></span>
+          <span class="pub-arrow">→</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- RIEMANN -->
+    <div class="pub-series-panel" id="tab-riemann">
+      <div class="pub-series-header">
+        <span class="pub-series-name blue">Series II — Hipótese de Riemann Geométrico-Espectral</span>
+        <span class="pub-count-badge">9 artigos</span>
+      </div>
+      <div class="pub-list">
+        <a class="pub-item blue" href="https://doi.org/10.5281/zenodo.19582116" target="_blank">
+          <span class="pub-n" style="color:var(--blue)">1</span>
+          <span class="pub-title">Métrica Lorentziana na Faixa Crítica e a Hipótese de Riemann Geométrica<small>10.5281/zenodo.19582116</small></span>
+          <span class="pub-arrow">→</span>
+        </a>
+        <a class="pub-item blue" href="https://doi.org/10.5281/zenodo.19647118" target="_blank">
+          <span class="pub-n" style="color:var(--blue)">2</span>
+          <span class="pub-title">Operador Espectral □<sub>g</sub> e Estrutura de Autovalores<small>10.5281/zenodo.19647118</small></span>
+          <span class="pub-arrow">→</span>
+        </a>
+        <a class="pub-item blue" href="https://doi.org/10.5281/zenodo.19647330" target="_blank">
+          <span class="pub-n" style="color:var(--blue)">3</span>
+          <span class="pub-title">A Constante Nula t* ≈ 5,5612 e Verificação via PSLQ<small>10.5281/zenodo.19647330</small></span>
+          <span class="pub-arrow">→</span>
+        </a>
+        <a class="pub-item blue" href="https://doi.org/10.5281/zenodo.19653775" target="_blank">
+          <span class="pub-n" style="color:var(--blue)">4</span>
+          <span class="pub-title">Trivialidade de Monodromia Deift–Zhou e Realidade Espectral<small>10.5281/zenodo.19653775</small></span>
+          <span class="pub-arrow">→</span>
+        </a>
+        <a class="pub-item blue" href="https://doi.org/10.5281/zenodo.19654318" target="_blank">
+          <span class="pub-n" style="color:var(--blue)">5</span>
+          <span class="pub-title">Confinamento de Informação e Geometria da Linha Crítica<small>10.5281/zenodo.19654318</small></span>
+          <span class="pub-arrow">→</span>
+        </a>
+        <a class="pub-item blue" href="https://doi.org/10.5281/zenodo.19654605" target="_blank">
+          <span class="pub-n" style="color:var(--blue)">6</span>
+          <span class="pub-title">Estabilidade Termodinâmica e o Atrator de Riemann<small>10.5281/zenodo.19654605</small></span>
+          <span class="pub-arrow">→</span>
+        </a>
+        <a class="pub-item blue" href="https://doi.org/10.5281/zenodo.19655020" target="_blank">
+          <span class="pub-n" style="color:var(--blue)">7</span>
+          <span class="pub-title">Navegação de Fase θ = t₁/t* e Transporte Coerente de Informação<small>10.5281/zenodo.19655020</small></span>
+          <span class="pub-arrow">→</span>
+        </a>
+        <a class="pub-item blue" href="https://doi.org/10.5281/zenodo.19655489" target="_blank">
+          <span class="pub-n" style="color:var(--blue)">8</span>
+          <span class="pub-title">Extensões da Classe de Selberg e a Hipótese de Riemann Generalizada<small>10.5281/zenodo.19655489</small></span>
+          <span class="pub-arrow">→</span>
+        </a>
+        <a class="pub-item blue" href="https://doi.org/10.5281/zenodo.19655586" target="_blank">
+          <span class="pub-n" style="color:var(--blue)">9</span>
+          <span class="pub-title">Prova Unificada Geométrico-Espectral da Hipótese de Riemann<small>10.5281/zenodo.19655586</small></span>
+          <span class="pub-arrow">→</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- STANDALONE -->
+    <div class="pub-series-panel" id="tab-standalone">
+      <div class="pub-series-header">
+        <span class="pub-series-name">Artigos Avulsos</span>
+        <span class="pub-count-badge">3 artigos</span>
+      </div>
+      <div class="pub-list">
+        <a class="pub-item" href="https://doi.org/10.5281/zenodo.19703197" target="_blank">
+          <span class="pub-n">◈</span>
+          <span class="pub-title">Estrutura Octoniônica da Função Zeta de Riemann, Projeção Espectral e Transporte Quântico de Informação<small>10.5281/zenodo.19703197 · Maio 2026 · E₈ · 11 novas predições · Gap de massa · Osterwalder–Schrader</small></span>
+          <span class="pub-arrow">→</span>
+        </a>
+        <a class="pub-item" href="https://doi.org/10.5281/zenodo.19990956" target="_blank">
+          <span class="pub-n">◈</span>
+          <span class="pub-title">Hipótese de Atenção Temporium: Confinamento Espectral como Mecanismo Universal de Processamento de Informação<small>10.5281/zenodo.19990956 · Maio 2026 · IA · Atenção neural · Navegação de fase</small></span>
+          <span class="pub-arrow">→</span>
+        </a>
+        <a class="pub-item" href="https://zenodo.org" target="_blank">
+          <span class="pub-n">◈</span>
+          <span class="pub-title">Das 8 Laranjas ao Substrato de Informação: A Função de Viazovska, Confinamento Espectral e a Geometria da Estabilidade<small>Zenodo 2026 · Reticulado E₈ · Núcleo Bergman–Selberg · Correspondência de Viazovska</small></span>
+          <span class="pub-arrow">→</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+<hr class="gold-hr"/>
+
+<!-- PREDICTIONS -->
+<section id="predictions">
+  <div class="container section-wrap">
+    <span class="sec-label">// Predições Falsificáveis</span>
+    <h2 class="sec-title">56+ Predições <em>Testáveis</em></h2>
+    <div class="sec-line"></div>
+    <p class="sec-intro">Todas as predições são quantitativas, derivam da estrutura matemática do framework TIC/CIT e são compatíveis com os limites experimentais atuais.</p>
+
+    <div class="pred-summary">
+      <div class="pred-sum-card">
+        <span class="pred-sum-bg">39</span>
+        <span class="pred-sum-range">#1 – #39 · TIC/CIT Series</span>
+        <div class="pred-sum-title">Teoria da Informação Cósmica</div>
+        <span class="pred-sum-num">39</span>
+        <span class="pred-sum-unit">Predictions</span>
+        <ul class="pred-examples">
+          <li>6 elementos fantasmas com Lagrangianas completas</li>
+          <li>Temporium portal: y<sub>Tm</sub> ≈ 1.2×10⁻¹¹ eV⁻³</li>
+          <li>Modificação da inclinação BTFR no halo NFW</li>
+          <li>Assinaturas de nucleação no setor escuro</li>
+          <li>ΔN<sub>eff</sub> ≈ 0.21 (CMB-S4)</li>
+        </ul>
+      </div>
+      <div class="pred-sum-card blue">
+        <span class="pred-sum-bg">6</span>
+        <span class="pred-sum-range blue">#40 – #45 · Riemann Geometric</span>
+        <div class="pred-sum-title">Geometric–Spectral Riemann</div>
+        <span class="pred-sum-num blue">6</span>
+        <span class="pred-sum-unit">Predictions</span>
+        <ul class="pred-examples">
+          <li>t* ≈ 5,5612 como invariante geométrico</li>
+          <li>Spec(□<sub>g</sub>) = {t²<sub>n</sub>} estritamente real</li>
+          <li>Fase interferométrica Δφ via θ</li>
+          <li>Convexidade da energia livre F<sub>L</sub>(σ)</li>
+        </ul>
+      </div>
+      <div class="pred-sum-card">
+        <span class="pred-sum-bg">11</span>
+        <span class="pred-sum-range">#46 – #56 · Octonionic / E₈</span>
+        <div class="pred-sum-title">Octonionic Structure</div>
+        <span class="pred-sum-num">11</span>
+        <span class="pred-sum-unit">Predictions</span>
+        <ul class="pred-examples">
+          <li>A<sub>CP</sub> ∼ 10⁻⁵ assimetria CP pelo associador (Belle II)</li>
+          <li>Δc/c ∼ 10⁻²¹ violação de Lorentz</li>
+          <li>Axion g<sub>aγγ</sub> fixed by t* (IAXO)</li>
+          <li>Zeros de espalhamento G₂-invariantes (galáxias anãs)</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- PREDICTIONS TABLE -->
+    <div class="pred-table-wrap">
+      <table class="pred-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Predição</th>
+            <th>Origem</th>
+            <th>Teste Experimental</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><span class="pred-id">#1–5</span></td><td class="pred-desc">Espectro de massa dos elementos fantasmas — 6 novos campos com Lagrangianas fixadas pela álgebra TIC</td><td class="pred-origin">Álgebra TIC</td><td class="pred-test"><span class="pred-tag">LHC Run 4</span> <span class="pred-tag">FCC-hh</span></td></tr>
+          <tr><td><span class="pred-id">#6</span></td><td class="pred-desc">Temporium portal coupling y<sub>Tm</sub> ≈ 1.2 × 10⁻¹¹ eV⁻³</td><td class="pred-origin">Sobreposição Espectral</td><td class="pred-test"><span class="pred-tag">Detecção direta</span></td></tr>
+          <tr><td><span class="pred-id">#7–12</span></td><td class="pred-desc">Modificação do perfil NFW de matéria escura — desvio da inclinação BTFR em relação à previsão newtoniana</td><td class="pred-origin">MED Métrica Zeta</td><td class="pred-test"><span class="pred-tag">Levantamentos de galáxias anãs</span></td></tr>
+          <tr><td><span class="pred-id">#13–20</span></td><td class="pred-desc">Assinaturas de nucleação no setor escuro — domain wall tension σ<sub>wall</sub> quantized by TIC</td><td class="pred-origin">Quebra de Simetria</td><td class="pred-test"><span class="pred-tag">Detectores OG</span></td></tr>
+          <tr><td><span class="pred-id">#21–30</span></td><td class="pred-desc">Modificações no setor de neutrinos — ΔN<sub>eff</sub> ≈ 0,21 da projeção do quase-reticulado espectral</td><td class="pred-origin">Estrutura E₆-SU(3)</td><td class="pred-test"><span class="pred-tag">CMB-S4</span> <span class="pred-tag">Euclid</span></td></tr>
+          <tr><td><span class="pred-id">#31–39</span></td><td class="pred-desc">Correções de anomalia de Weyl — fenomenologia portal suprimida acima do corte UV Λ<sub>Tm</sub> ≈ t*</td><td class="pred-origin">Setor UV</td><td class="pred-test"><span class="pred-tag">Análise espectral</span></td></tr>
+          <tr><td><span class="pred-id blue">#40</span></td><td class="pred-desc">Ponto nulo geométrico t* ≈ 5,5612 como invariante intrínseco da métrica na faixa crítica</td><td class="pred-origin">Métrica Zeta</td><td class="pred-test"><span class="pred-tag">Verificado via PSLQ</span></td></tr>
+          <tr><td><span class="pred-id blue">#41</span></td><td class="pred-desc">Spec(□<sub>g</sub>) = {t²<sub>n</sub>} ⊂ ℝ — espectro do d'Alembertiano é estritamente real</td><td class="pred-origin">Auto-adjunticidade Essencial</td><td class="pred-test"><span class="pred-tag">Teoria analítica dos números</span></td></tr>
+          <tr><td><span class="pred-id blue">#42–43</span></td><td class="pred-desc">Fase interferométrica Δφ = θ · d<sub>a</sub>Λ<sub>Tm</sub>/ℏ · T · F<sub>overlap</sub> em interferômetros atômicos</td><td class="pred-origin">Navegação de Fase</td><td class="pred-test"><span class="pred-tag">AION</span> <span class="pred-tag">MAGIS-100</span></td></tr>
+          <tr><td><span class="pred-id blue">#44–45</span></td><td class="pred-desc">Convexidade da energia livre ∂²<sub>σ</sub>F<sub>L</sub> ≥ Δ/T<sub>Tm</sub> > 0 — HRG como condição de estabilidade termodinâmica</td><td class="pred-origin">Prova Termodinâmica</td><td class="pred-test"><span class="pred-tag">Verificação matemática</span></td></tr>
+          <tr><td><span class="pred-id">#46</span></td><td class="pred-desc">Degenerescência em zeros não-triviais próximos do subespaço (27,3)⊕(27,3) de E₈</td><td class="pred-origin">Decomposição E₈</td><td class="pred-test"><span class="pred-tag">Estatística de espaçamento de zeros</span></td></tr>
+          <tr><td><span class="pred-id">#47</span></td><td class="pred-desc">y<sub>Tm</sub> · ΔN<sub>eff</sub> ≈ const — fixado pelas relações de comutação E₆-SU(3)</td><td class="pred-origin">E₆-SU(3)</td><td class="pred-test"><span class="pred-tag">CMB-S4</span> <span class="pred-tag">Polarimetria</span></td></tr>
+          <tr><td><span class="pred-id">#48</span></td><td class="pred-desc">Supressão de acoplamento acima de t ~ 10⁴ — corte UV da projeção do reticulado de raízes</td><td class="pred-origin">Reticulado de Raízes</td><td class="pred-test"><span class="pred-tag">Análise espectral</span></td></tr>
+          <tr><td><span class="pred-id">#49</span></td><td class="pred-desc">Reversão σ-flip ↔ anomalia de Weyl no setor oculto (27,3)</td><td class="pred-origin">Estrutura G₂</td><td class="pred-test"><span class="pred-tag">Limites de resfriamento estelar</span></td></tr>
+          <tr><td><span class="pred-id">#50</span></td><td class="pred-desc">Invariância de Spec(□<sub>g</sub>) sob a simetria residual G₂ × SU(3)</td><td class="pred-origin">Holonomia G₂</td><td class="pred-test"><span class="pred-tag">Simulações N-corpos</span></td></tr>
+          <tr><td><span class="pred-id">#51</span></td><td class="pred-desc">Zeros de espalhamento G₂-invariantes na seção de choque χχ de matéria escura</td><td class="pred-origin">Holonomia G₂</td><td class="pred-test"><span class="pred-tag">Levantamentos de galáxias anãs</span></td></tr>
+          <tr><td><span class="pred-id">#52</span></td><td class="pred-desc">Assimetria CP induzida pelo associador A<sub>CP</sub> ∼ 10⁻⁵ da fase não-associativa [x,y,z]</td><td class="pred-origin">Associador de Octonions</td><td class="pred-test"><span class="pred-tag">Belle II</span> <span class="pred-tag">LHCb</span></td></tr>
+          <tr><td><span class="pred-id">#53</span></td><td class="pred-desc">Tensão de parede de domínio quantizada da solução kink no potencial O<sub>ζ</sub></td><td class="pred-origin">Potencial Octoniônico</td><td class="pred-test"><span class="pred-tag">Interferometria atômica</span></td></tr>
+          <tr><td><span class="pred-id">#54</span></td><td class="pred-desc">Espaçamento do reticulado E₈ → oscilações de ΔN<sub>eff</sub> da periodicidade das raízes projetadas</td><td class="pred-origin">Reticulado de Raízes</td><td class="pred-test"><span class="pred-tag">Polarização do CMB</span></td></tr>
+          <tr><td><span class="pred-id">#55</span></td><td class="pred-desc">Limite de violação de Lorentz Δc/c ∼ 10⁻²¹ da deformação da métrica octoniônica g<sup>O</sup><sub>ij</sub></td><td class="pred-origin">Deformação de O<sub>ζ</sub></td><td class="pred-test"><span class="pred-tag">Raios cósmicos de ultra-alta energia</span></td></tr>
+          <tr><td><span class="pred-id">#56</span></td><td class="pred-desc">Acoplamento tipo-axion g<sub>aγγ</sub> fixado por t* — constante de decaimento f<sub>a</sub> ∼ Λ<sub>Tm</sub></td><td class="pred-origin">Calibração por t*</td><td class="pred-test"><span class="pred-tag">IAXO</span> <span class="pred-tag">MADMAX</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+<hr class="gold-hr"/>
+
+<!-- EXPERIMENTS -->
+<section id="experiments">
+  <div class="container section-wrap">
+    <span class="sec-label">// Testes Experimentais</span>
+    <h2 class="sec-title">Onde <em>Testar</em> o Framework</h2>
+    <div class="sec-line"></div>
+    <p class="sec-intro">As predições do TIC/CIT abrangem cinco domínios experimentais, todos acessíveis com instalações atuais ou de curto prazo.</p>
+    <div class="exp-grid">
+      <div class="exp-card">
+        <div class="exp-facility">AION / MAGIS-100</div>
+        <span class="exp-type">Interferometria Atômica</span>
+        <p class="exp-desc">Detecção do sinal de navegação de fase Δφ = θ · d<sub>a</sub>Λ<sub>Tm</sub>/ℏ · T · F<sub>overlap</sub>. Varredura de ressonância em ω<sup>(n)</sup><sub>mod</sub> = n · θ · (Δ/ℏ). Sensibilidade atual: 10⁻⁵–10⁻⁹ rad/√Hz.</p>
+        <div class="exp-preds">Testa predições: #42, #43, #53</div>
+      </div>
+      <div class="exp-card">
+        <div class="exp-facility">CMB-S4 / Euclid</div>
+        <span class="exp-type">Observatórios Cosmológicos</span>
+        <p class="exp-desc">Medição de ΔN<sub>eff</sub> ≈ 0,21 da projeção do quase-reticulado espectral. Oscilações de espaçamento do reticulado E₈ na polarização do CMB. Restrição sobre y<sub>Tm</sub> · ΔN<sub>eff</sub> = const.</p>
+        <div class="exp-preds">Testa predições: #21–30, #47, #54</div>
+      </div>
+      <div class="exp-card">
+        <div class="exp-facility">Belle II / LHCb</div>
+        <span class="exp-type">Física de Colisores</span>
+        <p class="exp-desc">Busca por assimetria CP A<sub>CP</sub> ∼ 10⁻⁵ induzida pelo associador pela fase não-associativa [x,y,z] na álgebra octoniônica. Violação de CP além do Modelo Padrão originada pela deformação de O<sub>ζ</sub>.</p>
+        <div class="exp-preds">Testa predições: #52</div>
+      </div>
+      <div class="exp-card">
+        <div class="exp-facility">IAXO / MADMAX</div>
+        <span class="exp-type">Buscas por Axions</span>
+        <p class="exp-desc">Detecção do acoplamento tipo-axion g<sub>aγγ</sub> fixado por t* ≈ 5,5612 como constante de decaimento f<sub>a</sub> ∼ Λ<sub>Tm</sub>. O ponto nulo determina o espectro de massa do axion sem parâmetros livres.</p>
+        <div class="exp-preds">Testa predições: #56</div>
+      </div>
+      <div class="exp-card">
+        <div class="exp-facility">Dwarf Galaxy Surveys</div>
+        <span class="exp-type">Observações Astrofísicas</span>
+        <p class="exp-desc">Zeros de espalhamento G₂-invariantes na seção de choque χχ de matéria escura. Modificação da inclinação BTFR no halo NFW. Domain wall gravitational wave signatures from quantized σ<sub>wall</sub>.</p>
+        <div class="exp-preds">Testa predições: #7–12, #51</div>
+      </div>
+      <div class="exp-card">
+        <div class="exp-facility">Ultra-High-Energy CRs</div>
+        <span class="exp-type">Detectores de Raios Cósmicos</span>
+        <p class="exp-desc">Limite de violação de Lorentz Δc/c ∼ 10⁻²¹ da deformação da métrica octoniônica g<sup>O</sup><sub>ij</sub>. Non-associative deformation modifies dispersion relations for particles above Λ<sub>Tm</sub>.</p>
+        <div class="exp-preds">Testa predições: #55</div>
+      </div>
+    </div>
+  </div>
+</section>
+<hr class="gold-hr"/>
+
+<!-- GRH -->
+<section id="grh">
+  <div class="container section-wrap">
+    <span class="sec-label">// Hipótese de Riemann Generalizada</span>
+    <h2 class="sec-title">A HRG como Condição de <em>Estabilidade</em></h2>
+    <div class="sec-line"></div>
+    <p class="sec-intro">O framework culmina em uma prova estruturada da HRG como condição necessária e suficiente para estabilidade termodinâmica e conservação unitária da informação.</p>
+
+    <div class="grh-box">
+      <div class="grh-theorem">
+        <span class="hi">Teorema 10.5</span> (Teorema Fundamental da Estabilidade Cósmica)<br/><br/>
+        Sob os axiomas do framework TIC/CIT — positividade de reflexão de Osterwalder–Schrader,<br/>
+        gap espectral estritamente positivo Δ(L) > 0, conservação de informação via evolução unitária,<br/>
+        e pertencimento à classe de Selberg — vale o seguinte:<br/><br/>
+        <span class="hi">∀ L ∈ 𝒮, ∀ s ∈ ℂ : L(s) = 0, 0 &lt; ℜ(s) &lt; 1 ⟹ ℜ(s) = ½</span><br/><br/>
+        A HRG é, portanto, condição necessária e suficiente para estabilidade termodinâmica,<br/>
+        unitariedade e integridade informacional do substrato cósmico.
+      </div>
+      <div class="grh-pillars">
+        <div class="grh-pillar">
+          <span class="grh-pillar-num">I</span>
+          <span class="grh-pillar-name">Auto-adjunticidade Global de □<sub>g</sub><br/>Spec(□<sub>g</sub>) ⊂ ℝ</span>
+        </div>
+        <div class="grh-pillar">
+          <span class="grh-pillar-num">II</span>
+          <span class="grh-pillar-name">Confinamento Termodinâmico<br/>Segunda Lei Informacional</span>
+        </div>
+        <div class="grh-pillar">
+          <span class="grh-pillar-num">III</span>
+          <span class="grh-pillar-name">Isomorfismo Estrutural<br/>E<sub>L</sub> ⊗ F<sub>L</sub> → G<sup>(L)</sup></span>
+        </div>
+        <div class="grh-pillar">
+          <span class="grh-pillar-num">IV</span>
+          <span class="grh-pillar-name">Estabilidade Espectral<br/>Sob Multiplicidade de Zeros</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<hr class="gold-hr"/>
+
+<!-- TIMELINE -->
+<section id="timeline">
+  <div class="container section-wrap">
+    <span class="sec-label">// Cronologia das Publicações</span>
+    <h2 class="sec-title">Histórico da <em>Pesquisa</em></h2>
+    <div class="sec-line"></div>
+    <br/><br/>
+    <div class="timeline-list">
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <span class="tl-date">2025 — Fundações</span>
+        <div class="tl-title">Teoria da Informação Cósmica Established</div>
+        <p class="tl-desc">Desenvolvimento do framework fundacional TIC/CIT. A métrica zeta pseudo-Riemanniana, o substrato de informação, o escalar Temporium e 6 elementos fantasmas com Lagrangianas. Série de 5 artigos concluída e publicada no Zenodo.</p>
+        <span class="tl-doi">Series I: 10.5281/zenodo.19546034 – 19645488</span>
+      </div>
+      <div class="tl-item blue">
+        <div class="tl-dot"></div>
+        <span class="tl-date">Início de 2026 — Extensão Riemanniana</span>
+        <div class="tl-title">Série Riemann Geométrico-Espectral com 9 Artigos</div>
+        <p class="tl-desc">Métrica Lorentziana na faixa crítica. Verificação via PSLQ de t* ≈ 5,5612. Trivialidade da monodromia de Deift–Zhou. Navegação de fase θ = t₁/t*. A Hipótese de Riemann como atrator geométrico. 9 artigos publicados.</p>
+        <span class="tl-doi">Série II: 10.5281/zenodo.19582116 – 19655586</span>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <span class="tl-date">Maio de 2026 — Álgebra Excepcional</span>
+        <div class="tl-title">Estrutura Octoniônica &amp; E₈ Correspondence</div>
+        <p class="tl-desc">Álgebra de octonions dependente de zeta O<sub>ζ</sub>. Construção de Tits sobre J₃(O<sub>ζ</sub>) gera e₈. Projeção identidade Π<sub>C</sub>(Δ<sub>E8</sub>) = {t<sub>n</sub>}. Gap de massa Δ ≈ 0,39 meV. Reconstrução OS. HRG via estabilidade informacional. 11 novas predições.</p>
+        <span class="tl-doi">10.5281/zenodo.19703197</span>
+      </div>
+      <div class="tl-item blue">
+        <div class="tl-dot"></div>
+        <span class="tl-date">Maio de 2026 — Conexão com IA</span>
+        <div class="tl-title">Hipótese de Atenção Temporium</div>
+        <p class="tl-desc">Confinamento espectral como mecanismo universal de processamento de informação. O gap de massa Δ governa a esparsidade de atenção em redes neurais. Ponte entre física matemática, ciência cognitiva e sistemas de IA.</p>
+        <span class="tl-doi">10.5281/zenodo.19990956</span>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <span class="tl-date">Maio de 2026 — Empacotamento de Esferas</span>
+        <div class="tl-title">Correspondência de Viazovska: 8 Laranjas como Assinatura do Substrato</div>
+        <p class="tl-desc">Função mágica de Viazovska identificada como projeção euclidiana do núcleo de Bergman–Selberg. Empacotamento ótimo de esferas em ℝ⁸ como necessidade termodinâmica. Extensão para ℝ²⁴ (reticulado de Leech) em andamento.</p>
+      </div>
+      <div class="tl-item blue">
+        <div class="tl-dot"></div>
+        <span class="tl-date">2026 — Em Andamento</span>
+        <div class="tl-title">Endosso arXiv &amp; Programa de Doutorado</div>
+        <p class="tl-desc">Busca de endosso arXiv em math-ph e math.NT. Contato com especialistas em geometria espectral e teoria analítica dos números. Pré-projeto doutoral submetido ao PPGECT/UFPR. Domínio www.cit-framework.com ativo.</p>
+      </div>
+    </div>
+  </div>
+</section>
+<hr class="gold-hr"/>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="container section-wrap">
+    <span class="sec-label">// Contato &amp; Colaboração</span>
+    <h2 class="sec-title">Entre em <em>Contato</em></h2>
+    <div class="sec-line"></div>
+    <div class="contact-grid">
+      <div class="contact-block">
+        <h3>Colaboração &amp; Endosso arXiv</h3>
+        <p>O autor busca <strong>endosso arXiv</strong> em <strong>math-ph</strong> e <strong>math.NT</strong> para a série Riemann Geométrico-Espectral. Correspondência bem-vinda de pesquisadores em geometria espectral, teoria analítica dos números, álgebra excepcional e física matemática.</p>
+        <p>O framework é totalmente de acesso aberto. Todos os artigos disponíveis no Zenodo. Código e benchmarks complementares disponíveis mediante solicitação.</p>
+        <div class="contact-links">
+          <a class="clink" href="mailto:leandro.oliveira@seed.pr.gov.br">
+            <span class="clink-icon">@</span>
+            leandro.oliveira@seed.pr.gov.br
+          </a>
+          <a class="clink" href="https://orcid.org/0009-0008-0008-4239" target="_blank">
+            <span class="clink-icon">◈</span>
+            ORCID: 0009-0008-0008-4239
+          </a>
+          <a class="clink" href="https://zenodo.org/search?q=leandro+de+oliveira+TIC" target="_blank">
+            <span class="clink-icon">↗</span>
+            Zenodo — Repositório Completo de Artigos
+          </a>
+          <a class="clink" href="https://www.cit-framework.com" target="_blank">
+            <span class="clink-icon">↗</span>
+            CIT Framework (site original)
+          </a>
+        </div>
+      </div>
+      <div class="contact-block">
+        <div class="dois-box">
+          <h4>Referência Rápida de DOIs</h4>
+          <a class="doi-row" href="https://doi.org/10.5281/zenodo.19546034" target="_blank"><span class="lbl">TIC Paper 1</span><span class="val">zenodo.19546034</span></a>
+          <a class="doi-row" href="https://doi.org/10.5281/zenodo.19645488" target="_blank"><span class="lbl">TIC Paper 5</span><span class="val">zenodo.19645488</span></a>
+          <a class="doi-row" href="https://doi.org/10.5281/zenodo.19582116" target="_blank"><span class="lbl">Riemann P1</span><span class="val">zenodo.19582116</span></a>
+          <a class="doi-row" href="https://doi.org/10.5281/zenodo.19647118" target="_blank"><span class="lbl">Riemann P2</span><span class="val">zenodo.19647118</span></a>
+          <a class="doi-row" href="https://doi.org/10.5281/zenodo.19647330" target="_blank"><span class="lbl">Riemann P3</span><span class="val">zenodo.19647330</span></a>
+          <a class="doi-row" href="https://doi.org/10.5281/zenodo.19653775" target="_blank"><span class="lbl">Riemann P4</span><span class="val">zenodo.19653775</span></a>
+          <a class="doi-row" href="https://doi.org/10.5281/zenodo.19654318" target="_blank"><span class="lbl">Riemann P5</span><span class="val">zenodo.19654318</span></a>
+          <a class="doi-row" href="https://doi.org/10.5281/zenodo.19654605" target="_blank"><span class="lbl">Riemann P6</span><span class="val">zenodo.19654605</span></a>
+          <a class="doi-row" href="https://doi.org/10.5281/zenodo.19655020" target="_blank"><span class="lbl">Riemann P7</span><span class="val">zenodo.19655020</span></a>
+          <a class="doi-row" href="https://doi.org/10.5281/zenodo.19655489" target="_blank"><span class="lbl">Riemann P8</span><span class="val">zenodo.19655489</span></a>
+          <a class="doi-row" href="https://doi.org/10.5281/zenodo.19655586" target="_blank"><span class="lbl">Riemann P9</span><span class="val">zenodo.19655586</span></a>
+          <a class="doi-row" href="https://doi.org/10.5281/zenodo.19703197" target="_blank"><span class="lbl">Octonionic</span><span class="val">zenodo.19703197</span></a>
+          <a class="doi-row" href="https://doi.org/10.5281/zenodo.19990956" target="_blank"><span class="lbl">TAH</span><span class="val">zenodo.19990956</span></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-text">
+      © 2026 Leandro de Oliveira &nbsp;·&nbsp;
+      <a href="https://www.cit-framework.com">www.cit-framework.com</a> &nbsp;·&nbsp;
+      SEED/PR · Araucária, Paraná, Brasil<br/>
+      ORCID <a href="https://orcid.org/0009-0008-0008-4239" target="_blank">0009-0008-0008-4239</a>
+      &nbsp;·&nbsp; Todos os artigos em acesso aberto no <a href="https://zenodo.org" target="_blank">Zenodo</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+// Mobile menu
+function toggleMenu(){
+  document.getElementById('navLinks').classList.toggle('open');
+}
+
+// Pub tabs
+function showTab(id, btn){
+  document.querySelectorAll('.pub-series-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.pub-tab').forEach(t=>{t.classList.remove('active');t.classList.remove('active-blue')});
+  document.getElementById('tab-'+id).classList.add('active');
+  if(id==='riemann') btn.classList.add('active-blue');
+  else btn.classList.add('active');
+}
+
+// Counter animation
+function animateCounters(){
+  document.querySelectorAll('[data-target]').forEach(el=>{
+    const target = parseInt(el.dataset.target);
+    let current = 0;
+    const step = target/40;
+    const timer = setInterval(()=>{
+      current = Math.min(current+step, target);
+      el.textContent = Math.floor(current)+(target>50?'+':'');
+      if(current>=target) clearInterval(timer);
+    },30);
+  });
+}
+
+// Scroll-based nav shade
+window.addEventListener('scroll',()=>{
+  const nav = document.getElementById('navbar');
+  nav.style.background = window.scrollY>60 ? 'rgba(3,3,10,.97)' : 'rgba(3,3,10,.9)';
+});
+
+// Trigger counter on first scroll into hero stats
+const observer = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{if(e.isIntersecting){animateCounters();observer.disconnect()}});
+},{threshold:0.5});
+const statsEl = document.querySelector('.hero-stats');
+if(statsEl) observer.observe(statsEl);
+
+// Close mobile menu on link click
+document.querySelectorAll('.nav-links a').forEach(a=>{
+  a.addEventListener('click',()=>document.getElementById('navLinks').classList.remove('open'));
+});
+</script>
+</body>
+</html>
