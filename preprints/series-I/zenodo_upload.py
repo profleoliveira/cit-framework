@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Zenodo upload script for TIC/CIT Papers 6-9.
-Usage: ZENODO_TOKEN=<your_token> python3 zenodo_upload.py
+Usage: ZENODO_TOKEN=<XtVcAO026OaNuYQl5AdDlku7KVtO9gDNVD5aVmuU0PaDyeDE2Orr2Mn3ieCU> python3 zenodo_upload.py
 
 After uploading paper 6, update zenodo_metadata.json with the DOI,
 then run again for paper 7, and so on (6 -> 7 -> 8 -> 9 in order).
