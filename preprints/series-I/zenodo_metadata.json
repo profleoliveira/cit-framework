@@ -1,0 +1,162 @@
+[
+  {
+    "paper": 6,
+    "file": "TIC_CIT_Paper6_Friedmann.pdf",
+    "title": "Modified Friedmann Equation in Cosmic Information Theory and the Hubble Tension",
+    "authors": [
+      {
+        "name": "Oliveira, Leandro de",
+        "orcid": "0009-0008-0008-4239",
+        "affiliation": "Colégio Estadual Cecília Meireles / Escola Municipal Prof.ª Terezinha M. Theobald, Araucária, Paraná, Brazil"
+      }
+    ],
+    "upload_type": "publication",
+    "publication_type": "article",
+    "description": "We derive the complete modified Friedmann equation from the TIC/CIT (Cosmic Information Theory) action, in which cosmic information entropy S_TIC acts as a dynamical gravitational degree of freedom coupled to the dark sector via U(1)_sigma gauge symmetry. The sigma-flip mechanism at redshift z* naturally generates a ~7% discrepancy in inferred H_0 values between the CMB epoch and local measurements, without fine-tuning. We compute S_TIC(z) explicitly via the Bunch-Davies vacuum, perform a numerical chi-squared comparison against DESI DR1 BAO data across seven redshift bins, and derive the falsifiable prediction w_DE(z) ≠ -1 with |Δw| ~ 10^{-3}, accessible to Euclid and the Nancy Grace Roman Space Telescope. All results are grounded in the four axioms, four pillars, Core Inequality and forcing-extension consistency of TIC/CIT (Papers 1-5). Paper 6 of the TIC/CIT series.",
+    "keywords": [
+      "Hubble tension",
+      "modified Friedmann equation",
+      "dark energy",
+      "cosmic information theory",
+      "U(1) gauge symmetry",
+      "sigma-flip",
+      "Weyl classification",
+      "DESI BAO",
+      "Riemann Hypothesis",
+      "Mukhanov-Sasaki"
+    ],
+    "related_identifiers": [
+      {"identifier": "10.5281/zenodo.19546034", "relation": "isPartOf", "scheme": "doi"},
+      {"identifier": "10.5281/zenodo.19600122", "relation": "isPartOf", "scheme": "doi"},
+      {"identifier": "10.5281/zenodo.19600582", "relation": "isPartOf", "scheme": "doi"},
+      {"identifier": "10.5281/zenodo.19644982", "relation": "isPartOf", "scheme": "doi"},
+      {"identifier": "10.5281/zenodo.19645488", "relation": "isPartOf", "scheme": "doi"},
+      {"identifier": "10.5281/zenodo.20115627", "relation": "isPartOf", "scheme": "doi"},
+      {"identifier": "10.5281/zenodo.20115881", "relation": "isPartOf", "scheme": "doi"}
+    ],
+    "license": "cc-by-4.0",
+    "zenodo_doi": null
+  },
+  {
+    "paper": 7,
+    "file": "TIC_CIT_Paper7_WIIIProof.pdf",
+    "title": "Strict Prohibition of W-III Modes by the TIC/CIT Core Inequality: A Complete Proof via the Mukhanov-Sasaki Equation",
+    "authors": [
+      {
+        "name": "Oliveira, Leandro de",
+        "orcid": "0009-0008-0008-4239",
+        "affiliation": "Colégio Estadual Cecília Meireles / Escola Municipal Prof.ª Terezinha M. Theobald, Araucária, Paraná, Brazil"
+      }
+    ],
+    "upload_type": "publication",
+    "publication_type": "article",
+    "description": "We prove, without appeal to physical intuition or numerical evidence, that W-III modes of the sigma-field in the TIC/CIT framework are strictly prohibited by the Core Inequality. The proof proceeds via three independent routes. Route A (main): we reduce the TIC/CIT second-order perturbation action to the Mukhanov-Sasaki equation and identify the Core Inequality with positive semi-definiteness of the MS Hamiltonian H_MS. Using the Hardy inequality on the half-line — with the sharp constant 1/4 — we construct an explicit test function for which the quadratic form is strictly negative whenever the W-III condition nu^2 > 1/2 holds, yielding a direct contradiction. Route B: W-III modes generate a non-zero imaginary part in the one-loop effective action, violating unitarity. Route C: the Core Inequality implies essential self-adjointness of H_MS via the Weyl limit-point criterion, which breaks down in the W-III regime. As a corollary, under the Spectral Correspondence Hypothesis, the prohibition of W-III modes is equivalent to the Riemann Hypothesis. Paper 7 of the TIC/CIT series.",
+    "keywords": [
+      "Mukhanov-Sasaki equation",
+      "Hardy inequality",
+      "W-III modes",
+      "Core Inequality",
+      "de Sitter stability",
+      "cosmic information theory",
+      "Riemann Hypothesis",
+      "self-adjointness",
+      "spectral theory",
+      "dark energy"
+    ],
+    "related_identifiers": [
+      {"identifier": "10.5281/zenodo.19546034", "relation": "isPartOf", "scheme": "doi"},
+      {"identifier": "10.5281/zenodo.19600122", "relation": "isPartOf", "scheme": "doi"},
+      {"identifier": "10.5281/zenodo.19600582", "relation": "isPartOf", "scheme": "doi"},
+      {"identifier": "10.5281/zenodo.19644982", "relation": "isPartOf", "scheme": "doi"},
+      {"identifier": "10.5281/zenodo.19645488", "relation": "isPartOf", "scheme": "doi"},
+      {"identifier": "10.5281/zenodo.20115627", "relation": "isPartOf", "scheme": "doi"},
+      {"identifier": "10.5281/zenodo.20115881", "relation": "isPartOf", "scheme": "doi"},
+      {"identifier": "PAPER_6_DOI", "relation": "continues", "scheme": "doi"}
+    ],
+    "license": "cc-by-4.0",
+    "zenodo_doi": null
+  },
+  {
+    "paper": 8,
+    "file": "TIC_CIT_Paper8_SpectralCorrespondence.pdf",
+    "title": "The Spectral Correspondence as Theorem: Hyperbolic Geometry, Eisenstein Series, and the Zeros of the Riemann Zeta Function",
+    "authors": [
+      {
+        "name": "Oliveira, Leandro de",
+        "orcid": "0009-0008-0008-4239",
+        "affiliation": "Colégio Estadual Cecília Meireles / Escola Municipal Prof.ª Terezinha M. Theobald, Araucária, Paraná, Brazil"
+      }
+    ],
+    "upload_type": "publication",
+    "publication_type": "article",
+    "description": "We establish the Spectral Correspondence Hypothesis stated in TIC/CIT Paper 7: the non-trivial zeros of the Riemann zeta function zeta(s) appear as scattering resonances of the Mukhanov-Sasaki Hamiltonian H_MS on the TIC/CIT modular surface M = SL(2,Z)\\H^2, with real spectral parameters E_rho = H^2(tau^2 + 1/4) for zeros rho = 1/2 + i*tau on the critical line. The proof rests on three pillars: (I) the de Sitter MS equation is identified with the eigenvalue problem of the Laplace-Beltrami operator on the Poincare upper half-plane via the conformal isomorphism dS_2 ≅ H^2; (II) the Gibbons-Hawking thermal periodicity and sigma-field S-duality determine the modular surface M_TIC = SL(2,Z)\\H^2; (III) the Eisenstein series scattering determinant phi(s) = xi(2s-1)/xi(2s) has poles at s = rho/2 for every non-trivial zero rho of zeta(s), producing resonant states with real spectral parameter iff rho lies on the critical line. The Selberg trace formula for M_TIC is shown to be equivalent to the Riemann-Weil explicit formula, with prime geodesics corresponding to prime numbers. Combined with Paper 7, this gives the Riemann Hypothesis as a corollary. Paper 8 of the TIC/CIT series.",
+    "keywords": [
+      "Riemann Hypothesis",
+      "spectral theory",
+      "de Sitter",
+      "Mukhanov-Sasaki",
+      "modular surface",
+      "Eisenstein series",
+      "Selberg trace formula",
+      "Selberg zeta function",
+      "Gibbons-Hawking temperature",
+      "Fisher information",
+      "TIC/CIT",
+      "hyperbolic geometry",
+      "automorphic forms"
+    ],
+    "related_identifiers": [
+      {"identifier": "10.5281/zenodo.19546034", "relation": "isPartOf", "scheme": "doi"},
+      {"identifier": "10.5281/zenodo.19600122", "relation": "isPartOf", "scheme": "doi"},
+      {"identifier": "10.5281/zenodo.19600582", "relation": "isPartOf", "scheme": "doi"},
+      {"identifier": "10.5281/zenodo.19644982", "relation": "isPartOf", "scheme": "doi"},
+      {"identifier": "10.5281/zenodo.19645488", "relation": "isPartOf", "scheme": "doi"},
+      {"identifier": "10.5281/zenodo.20115627", "relation": "isPartOf", "scheme": "doi"},
+      {"identifier": "10.5281/zenodo.20115881", "relation": "isPartOf", "scheme": "doi"},
+      {"identifier": "PAPER_7_DOI", "relation": "continues", "scheme": "doi"}
+    ],
+    "license": "cc-by-4.0",
+    "zenodo_doi": null
+  },
+  {
+    "paper": 9,
+    "file": "TIC_CIT_Paper9_GHLattice.pdf",
+    "title": "The Gibbons-Hawking Lattice is Exactly SL(2,Z): Uniqueness of the Modular Group in TIC/CIT",
+    "authors": [
+      {
+        "name": "Oliveira, Leandro de",
+        "orcid": "0009-0008-0008-4239",
+        "affiliation": "Colégio Estadual Cecília Meireles / Escola Municipal Prof.ª Terezinha M. Theobald, Araucária, Paraná, Brazil"
+      }
+    ],
+    "upload_type": "publication",
+    "publication_type": "article",
+    "description": "We prove that the Gibbons-Hawking thermal lattice Lambda_GH of TIC/CIT is exactly SL(2,Z), excluding all proper congruence subgroups Gamma_0(N), Gamma(N), and Gamma_1(N) for N > 1. Three independent routes are given. Route I (covolume): the de Sitter entropy uniquely fixes the covolume of Lambda_GH\\H^2 to pi/3; by Siegel's minimum covolume theorem and the index formula for congruence subgroups — which all satisfy covol >= pi for N >= 2 — only SL(2,Z) is consistent. Route II (S-duality obstruction): the TIC/CIT sigma-field S-duality g_sigma -> 1/g_sigma generates the matrix S = [[0,-1],[1,0]], which does not belong to Gamma_0(N) for any N >= 2, since the condition N|c with c=1 forces N=1. The Atkin-Lehner involution W_N differs from S for N >= 2, placing the self-dual coupling at g_sigma^* = N^{1/4} ≠ 1 in contradiction with Axiom 2. Route III (modular bootstrap): the Core Inequality forces the TIC/CIT partition function to be invariant under both T and the exact S-transformation, generating the full SL(2,Z) by the classical generators theorem. This closes the last logical gap in the TIC/CIT derivation of the Riemann Hypothesis. Paper 9 of the TIC/CIT series.",
+    "keywords": [
+      "SL(2,Z)",
+      "modular group",
+      "Gibbons-Hawking",
+      "congruence subgroup",
+      "Atkin-Lehner involution",
+      "covolume",
+      "de Sitter entropy",
+      "S-duality",
+      "modular bootstrap",
+      "cosmic information theory",
+      "Riemann Hypothesis",
+      "arithmetic Fuchsian groups"
+    ],
+    "related_identifiers": [
+      {"identifier": "10.5281/zenodo.19546034", "relation": "isPartOf", "scheme": "doi"},
+      {"identifier": "10.5281/zenodo.19600122", "relation": "isPartOf", "scheme": "doi"},
+      {"identifier": "10.5281/zenodo.19600582", "relation": "isPartOf", "scheme": "doi"},
+      {"identifier": "10.5281/zenodo.19644982", "relation": "isPartOf", "scheme": "doi"},
+      {"identifier": "10.5281/zenodo.19645488", "relation": "isPartOf", "scheme": "doi"},
+      {"identifier": "10.5281/zenodo.20115627", "relation": "isPartOf", "scheme": "doi"},
+      {"identifier": "10.5281/zenodo.20115881", "relation": "isPartOf", "scheme": "doi"},
+      {"identifier": "PAPER_8_DOI", "relation": "continues", "scheme": "doi"}
+    ],
+    "license": "cc-by-4.0",
+    "zenodo_doi": null
+  }
+]
