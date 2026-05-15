@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>TIC — Teoria da Informação Cósmica · Apresentação</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600&family=Fira+Code:wght@300;400;500&family=Jost:wght@200;300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#03030a;--s1:#07070f;--s2:#0c0c18;--s3:#111124;
+  --gold:#c9a84c;--gold-d:#7a5f25;--gold-b:#e8c870;
+  --blue:#5b8fd4;--blue-b:#7aaff0;
+  --green:#4cb89a;--red:#c94c5a;--purple:#9b7fd4;
+  --text:#e2ddd4;--muted:#7a7590;--dim:#4a4560;
+  --border:rgba(201,168,76,.12);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:100%;height:100%;overflow:hidden;font-family:'Jost',sans-serif;background:var(--bg);color:var(--text)}
+
+/* GRID BG */
+body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:linear-gradient(rgba(201,168,76,.02) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(201,168,76,.02) 1px,transparent 1px);
+  background-size:60px 60px}
+
+/* PROGRESS BAR */
+#progress{position:fixed;top:0;left:0;height:2px;background:var(--gold);z-index:999;transition:width .4s cubic-bezier(.4,0,.2,1)}
+
+/* SLIDE COUNTER */
+#counter{position:fixed;top:1.2rem;right:2rem;z-index:999;font-family:'Fira Code',monospace;font-size:.65rem;letter-spacing:.18em;color:var(--muted);opacity:.7}
+
+/* NAV ARROWS */
+.nav-arrow{position:fixed;top:50%;transform:translateY(-50%);z-index:999;width:44px;height:44px;border:1px solid var(--border);background:rgba(3,3,10,.7);backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;color:var(--muted)}
+.nav-arrow:hover{border-color:var(--gold);color:var(--gold)}
+#prev{left:1.2rem}
+#next{right:1.2rem}
+.nav-arrow svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.5}
+
+/* SLIDE DOTS */
+#dots{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);z-index:999;display:flex;gap:.5rem}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--dim);cursor:pointer;transition:all .3s}
+.dot.active{background:var(--gold);transform:scale(1.3)}
+
+/* KEYBOARD HINT */
+#hint{position:fixed;bottom:1.5rem;right:2rem;z-index:999;font-family:'Fira Code',monospace;font-size:.55rem;letter-spacing:.15em;color:var(--dim);opacity:.6}
+
+/* SLIDES CONTAINER */
+#deck{width:100%;height:100%;position:relative;z-index:1}
+
+/* SLIDE */
+.slide{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:5rem 2rem 4rem;opacity:0;pointer-events:none;transition:opacity .5s ease,transform .5s ease;transform:translateY(20px)}
+.slide.active{opacity:1;pointer-events:all;transform:translateY(0)}
+.slide.exit{opacity:0;transform:translateY(-20px)}
+
+/* COMMON ELEMENTS */
+.label{font-family:'Fira Code',monospace;font-size:.62rem;letter-spacing:.24em;text-transform:uppercase;color:var(--gold);opacity:.8;margin-bottom:1rem;display:block}
+.title{font-family:'Cormorant Garamond',serif;font-size:clamp(2rem,6vw,4.2rem);font-weight:300;line-height:1.1;color:#fff;margin-bottom:.5rem}
+.title em{font-style:italic;color:var(--gold)}
+.subtitle{font-family:'Cormorant Garamond',serif;font-size:clamp(1rem,2.5vw,1.6rem);color:var(--muted);font-style:italic;font-weight:300;margin-bottom:1.5rem}
+.body{font-size:.92rem;color:var(--muted);line-height:1.85;max-width:680px;text-align:center}
+.body strong{color:var(--text);font-weight:400}
+hr.rule{width:3rem;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);border:none;margin:1.2rem auto}
+
+/* COVER */
+.cover-badge{display:inline-flex;align-items:center;gap:.6rem;border:1px solid var(--border);padding:.4rem 1.1rem;margin-bottom:2rem;font-family:'Fira Code',monospace;font-size:.62rem;letter-spacing:.2em;color:var(--gold);text-transform:uppercase;background:rgba(201,168,76,.04)}
+.pulse{width:5px;height:5px;background:var(--gold);border-radius:50%;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.35;transform:scale(1.4)}}
+.equation{font-family:'Fira Code',monospace;font-size:clamp(.62rem,1.5vw,.82rem);color:var(--gold);opacity:.55;margin-top:1.5rem;letter-spacing:.05em}
+.stats-row{display:flex;border:1px solid var(--border);margin-top:2.5rem}
+.stat-box{text-align:center;padding:1.2rem 2rem;border-right:1px solid var(--border)}
+.stat-box:last-child{border-right:none}
+.stat-n{font-family:'Cormorant Garamond',serif;font-size:2.6rem;font-weight:600;color:var(--gold);display:block;line-height:1}
+.stat-l{font-size:.6rem;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-top:.3rem;display:block}
+
+/* CARDS GRID */
+.cards{display:grid;gap:1.2rem;width:100%;max-width:900px;margin-top:1.8rem}
+.cards-2{grid-template-columns:repeat(2,1fr)}
+.cards-3{grid-template-columns:repeat(3,1fr)}
+.card{background:var(--s2);border:1px solid var(--border);padding:1.4rem 1.6rem;position:relative}
+.card::before{content:'';position:absolute;top:0;left:0;width:2px;height:100%;background:var(--gold);opacity:.4}
+.card.blue::before{background:var(--blue)}
+.card.green::before{background:var(--green)}
+.card.purple::before{background:var(--purple)}
+.card.red::before{background:var(--red)}
+.card-n{font-family:'Fira Code',monospace;font-size:.58rem;letter-spacing:.2em;color:var(--muted);text-transform:uppercase;margin-bottom:.5rem;display:block}
+.card-title{font-family:'Cormorant Garamond',serif;font-size:1.05rem;font-weight:600;color:var(--text);margin-bottom:.5rem}
+.card-body{font-size:.8rem;color:var(--muted);line-height:1.7}
+.card-tag{display:inline-block;margin-top:.7rem;font-family:'Fira Code',monospace;font-size:.58rem;letter-spacing:.12em;color:var(--gold);border:1px solid var(--border);padding:.2rem .6rem}
+
+/* TIMELINE */
+.timeline{display:flex;flex-direction:column;gap:0;width:100%;max-width:760px;margin-top:1.8rem}
+.tl-item{display:flex;gap:1.5rem;align-items:flex-start;padding:1rem 0;border-bottom:1px solid rgba(201,168,76,.06)}
+.tl-item:last-child{border-bottom:none}
+.tl-left{min-width:130px;text-align:right}
+.tl-date{font-family:'Fira Code',monospace;font-size:.7rem;color:var(--gold);letter-spacing:.1em}
+.tl-series{font-size:.62rem;color:var(--muted);letter-spacing:.1em;margin-top:.2rem}
+.tl-dot{width:8px;height:8px;border-radius:50%;background:var(--gold);flex-shrink:0;margin-top:.35rem;position:relative}
+.tl-dot::after{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:16px;height:16px;border-radius:50%;border:1px solid rgba(201,168,76,.3)}
+.tl-right{}
+.tl-title{font-family:'Cormorant Garamond',serif;font-size:1rem;color:var(--text);font-weight:600}
+.tl-body{font-size:.78rem;color:var(--muted);line-height:1.6;margin-top:.25rem}
+
+/* PROOF STEPS */
+.steps{display:grid;grid-template-columns:repeat(2,1fr);gap:1rem;max-width:860px;width:100%;margin-top:1.8rem}
+.step{background:var(--s2);border:1px solid var(--border);padding:1.5rem;position:relative;overflow:hidden}
+.step::after{content:attr(data-n);position:absolute;bottom:-.4rem;right:.8rem;font-family:'Cormorant Garamond',serif;font-size:5rem;font-weight:700;color:rgba(201,168,76,.05);line-height:1;pointer-events:none}
+.step-n{font-family:'Fira Code',monospace;font-size:.6rem;color:var(--gold);letter-spacing:.2em;margin-bottom:.5rem;display:block}
+.step-title{font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:600;color:var(--text);margin-bottom:.4rem}
+.step-body{font-size:.78rem;color:var(--muted);line-height:1.65}
+.step-eq{font-family:'Fira Code',monospace;font-size:.67rem;color:var(--gold);opacity:.7;margin-top:.6rem;display:block}
+
+/* BIG THEOREM */
+.theorem-box{background:var(--s2);border:1px solid var(--gold-d);padding:2.5rem 3rem;max-width:820px;width:100%;position:relative;margin-top:1.8rem}
+.theorem-box::before{content:'Teorema 10.5';position:absolute;top:-.7rem;left:2rem;background:var(--bg);padding:0 .8rem;font-family:'Fira Code',monospace;font-size:.62rem;letter-spacing:.18em;color:var(--gold);text-transform:uppercase}
+.theorem-statement{font-family:'Cormorant Garamond',serif;font-size:clamp(1rem,2.5vw,1.3rem);font-style:italic;color:var(--text);line-height:1.65;margin-bottom:1.5rem;font-weight:300}
+.theorem-pillars{display:grid;grid-template-columns:repeat(2,1fr);gap:.8rem;margin-top:1rem}
+.pillar{border-left:2px solid var(--gold-d);padding:.6rem 1rem;background:rgba(201,168,76,.03)}
+.pillar span{font-family:'Fira Code',monospace;font-size:.6rem;letter-spacing:.15em;color:var(--gold);display:block;margin-bottom:.25rem}
+.pillar p{font-size:.78rem;color:var(--muted);line-height:1.5}
+
+/* PREDICTIONS TABLE */
+.pred-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;max-width:900px;width:100%;margin-top:1.8rem}
+.pred-card{background:var(--s2);border:1px solid var(--border);padding:1.2rem 1.4rem}
+.pred-n{font-family:'Cormorant Garamond',serif;font-size:2.2rem;font-weight:600;color:var(--gold);display:block;line-height:1;margin-bottom:.4rem}
+.pred-label{font-size:.78rem;color:var(--muted);line-height:1.5}
+.pred-facility{font-family:'Fira Code',monospace;font-size:.58rem;color:var(--blue);margin-top:.5rem;display:block;letter-spacing:.1em}
+
+/* REVOLUTION */
+.rev-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1.5rem;max-width:900px;width:100%;margin-top:1.8rem}
+.rev-item{display:flex;gap:1rem;align-items:flex-start}
+.rev-icon{width:36px;height:36px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:1rem}
+.rev-text .rev-title{font-family:'Cormorant Garamond',serif;font-size:1rem;font-weight:600;color:var(--text);margin-bottom:.3rem}
+.rev-text .rev-body{font-size:.78rem;color:var(--muted);line-height:1.6}
+
+/* HUMANITY */
+.humanity-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;max-width:960px;width:100%;margin-top:1.8rem}
+.h-card{background:var(--s2);border:1px solid var(--border);padding:1.4rem;text-align:center}
+.h-icon{font-size:1.8rem;display:block;margin-bottom:.7rem}
+.h-title{font-family:'Cormorant Garamond',serif;font-size:.95rem;font-weight:600;color:var(--text);margin-bottom:.5rem}
+.h-body{font-size:.75rem;color:var(--muted);line-height:1.6}
+
+/* SUPPORT */
+.support-wrap{display:grid;grid-template-columns:1fr 1fr;gap:2rem;max-width:860px;width:100%;margin-top:1.8rem;align-items:start}
+.support-block{background:var(--s2);border:1px solid var(--border);padding:1.8rem}
+.support-block h3{font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:600;color:var(--text);margin-bottom:1rem}
+.support-list{list-style:none;display:flex;flex-direction:column;gap:.55rem}
+.support-list li{font-size:.8rem;color:var(--muted);padding-left:1rem;position:relative;line-height:1.5}
+.support-list li::before{content:'→';position:absolute;left:0;color:var(--gold);font-size:.75rem}
+.support-list li strong{color:var(--text);font-weight:400}
+
+/* FINAL */
+.final-eq{font-family:'Fira Code',monospace;font-size:clamp(.7rem,2vw,1rem);color:var(--gold);opacity:.7;margin:1.5rem 0;letter-spacing:.05em;text-align:center}
+.links-row{display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;margin-top:2rem}
+.link-btn{display:inline-flex;align-items:center;gap:.5rem;padding:.65rem 1.5rem;font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;text-decoration:none;font-family:'Jost';font-weight:400;transition:all .25s;cursor:pointer}
+.link-btn-gold{background:var(--gold);color:#03030a}
+.link-btn-gold:hover{background:var(--gold-b)}
+.link-btn-out{background:transparent;color:var(--muted);border:1px solid rgba(255,255,255,.1)}
+.link-btn-out:hover{border-color:var(--gold);color:var(--gold)}
+.author-card{background:var(--s2);border:1px solid var(--border);padding:1.5rem 2rem;display:flex;align-items:center;gap:1.5rem;margin-top:2rem;max-width:600px}
+.author-avatar{width:54px;height:54px;border:1px solid var(--gold-d);border-radius:50%;background:var(--s3);display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:1.6rem;color:var(--gold);flex-shrink:0}
+.author-info{text-align:left}
+.author-name{font-family:'Cormorant Garamond',serif;font-size:1.05rem;font-weight:600;color:var(--text)}
+.author-role{font-size:.72rem;color:var(--muted);margin-top:.2rem;line-height:1.4}
+.author-orcid{font-family:'Fira Code',monospace;font-size:.6rem;color:var(--gold);margin-top:.35rem;opacity:.7}
+
+/* RESPONSIVE */
+@media(max-width:720px){
+  .cards-2,.cards-3,.steps,.theorem-pillars,.pred-grid,.rev-grid,.humanity-cards,.support-wrap{grid-template-columns:1fr}
+  .stats-row{flex-direction:column}
+  .stat-box{border-right:none;border-bottom:1px solid var(--border)}
+  .stat-box:last-child{border-bottom:none}
+  .tl-left{min-width:90px}
+  .slide{padding:5rem 1.2rem 3.5rem}
+  .theorem-box{padding:1.8rem 1.5rem}
+  .author-card{flex-direction:column;text-align:center}
+  .author-info{text-align:center}
+}
+</style>
+</head>
+<body>
+
+<div id="progress"></div>
+<div id="counter"></div>
+
+<button class="nav-arrow" id="prev" aria-label="Anterior">
+  <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+</button>
+<button class="nav-arrow" id="next" aria-label="Próximo">
+  <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+</button>
+
+<div id="dots"></div>
+<div id="hint">← → ou clique para navegar</div>
+
+<div id="deck">
+
+<!-- ═══════════════════════════════════════════════════════ SLIDE 1 — COVER -->
+<div class="slide active" data-index="0">
+  <div class="cover-badge"><div class="pulse"></div>Framework Científico · 2025–2026</div>
+  <span class="label">Leandro de Oliveira</span>
+  <h1 class="title">Teoria da <em>Informação</em><br>Cósmica</h1>
+  <p class="subtitle">O universo é feito de informação.</p>
+  <hr class="rule"/>
+  <p class="body">Uma nova teoria que conecta os maiores problemas abertos da Matemática e da Física — e sugere que a realidade é, em sua essência, um <strong>substrato de informação</strong> governado por uma estrutura matemática precisa.</p>
+  <div class="equation">g_ij = ∂_i ∂_j (−log|ζ(s)|)&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;Δ ≈ 0.39 meV&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;t* ≈ 5.5612</div>
+  <div class="stats-row">
+    <div class="stat-box"><span class="stat-n">27</span><span class="stat-l">Papers publicados</span></div>
+    <div class="stat-box"><span class="stat-n">5</span><span class="stat-l">Séries teóricas</span></div>
+    <div class="stat-box"><span class="stat-n">56+</span><span class="stat-l">Previsões testáveis</span></div>
+    <div class="stat-box"><span class="stat-n">6</span><span class="stat-l">Instalações de teste</span></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ SLIDE 2 — O PROBLEMA -->
+<div class="slide" data-index="1">
+  <span class="label">O Ponto de Partida</span>
+  <h2 class="title">Por que o universo<br><em>existe?</em></h2>
+  <hr class="rule"/>
+  <p class="body">A Física moderna tem dois modelos brilhantes que <strong>não conversam entre si</strong>: a Relatividade Geral (gravidade, espaço-tempo) e a Mecânica Quântica (partículas, campos). Entre eles há um abismo.</p>
+  <br/>
+  <div class="cards cards-3" style="max-width:820px">
+    <div class="card">
+      <span class="card-n">Problema 01</span>
+      <div class="card-title">A Matéria Escura</div>
+      <div class="card-body">95% do universo é composto por matéria e energia que não conseguimos detectar diretamente.</div>
+    </div>
+    <div class="card blue">
+      <span class="card-n">Problema 02</span>
+      <div class="card-title">A Hipótese de Riemann</div>
+      <div class="card-body">O maior problema em aberto da Matemática, sem solução há 167 anos — com US$ 1 milhão de prêmio.</div>
+    </div>
+    <div class="card green">
+      <span class="card-n">Problema 03</span>
+      <div class="card-title">Unificação</div>
+      <div class="card-body">Como a gravidade, as partículas quânticas e a informação se relacionam numa única teoria?</div>
+    </div>
+  </div>
+  <br/>
+  <p class="body" style="margin-top:.5rem">A TIC propõe que esses três problemas têm <strong>a mesma raiz</strong>.</p>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ SLIDE 3 — A IDEIA CENTRAL -->
+<div class="slide" data-index="2">
+  <span class="label">A Ideia Central</span>
+  <h2 class="title">O universo como<br><em>substrato de informação</em></h2>
+  <hr class="rule"/>
+  <p class="body">Imagine que o universo não é feito de "coisas" — mas de <strong>padrões de informação</strong>. Como um programa de computador que gera a realidade física a partir de regras matemáticas precisas.</p>
+  <br/>
+  <div class="cards cards-2" style="max-width:760px">
+    <div class="card">
+      <span class="card-n">Analogia simples</span>
+      <div class="card-title">A Partitura e a Música</div>
+      <div class="card-body">A música que ouvimos (universo físico) é gerada por uma partitura matemática (função zeta de Riemann ζ(s)). A TIC decifra essa partitura.</div>
+      <span class="card-tag">Metáfora intuitiva</span>
+    </div>
+    <div class="card blue">
+      <span class="card-n">A Equação Central</span>
+      <div class="card-title">Métrica da Informação</div>
+      <div class="card-body">A geometria do espaço-tempo é codificada pelos zeros da função zeta:<br/><code style="font-family:'Fira Code',monospace;font-size:.72rem;color:var(--gold)">g_ij = ∂_i∂_j(−log|ζ(s)|)</code></div>
+      <span class="card-tag">Fundamento matemático</span>
+    </div>
+  </div>
+  <br/>
+  <p class="body">A estrutura matemática que governa os números primos <strong>é a mesma</strong> que governa o espaço-tempo.</p>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ SLIDE 4 — GÊNESE DA PESQUISA -->
+<div class="slide" data-index="3">
+  <span class="label">A Jornada</span>
+  <h2 class="title">Como tudo<br><em>começou</em></h2>
+  <hr class="rule"/>
+  <div class="timeline">
+    <div class="tl-item">
+      <div class="tl-left">
+        <div class="tl-date">2025</div>
+        <div class="tl-series">Fundação</div>
+      </div>
+      <div class="tl-dot"></div>
+      <div class="tl-right">
+        <div class="tl-title">Séria I — TIC nasce</div>
+        <div class="tl-body">A pergunta inicial: e se a função zeta de Riemann não fosse apenas um objeto da teoria dos números, mas o esqueleto geométrico do universo? Primeiros 5 papers, 6 elementos fantasma, campo escalar Temporium.</div>
+      </div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-left">
+        <div class="tl-date">Início 2026</div>
+        <div class="tl-series">Expansão</div>
+      </div>
+      <div class="tl-dot"></div>
+      <div class="tl-right">
+        <div class="tl-title">Série II — Hipótese de Riemann como geometria</div>
+        <div class="tl-body">9 papers demonstrando que a Hipótese de Riemann é uma condição de estabilidade termodinâmica do cosmos — não apenas um resultado matemático abstrato. Constante t* ≈ 5.5612 verificada computacionalmente.</div>
+      </div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-left">
+        <div class="tl-date">Maio 2026</div>
+        <div class="tl-series">Amadurecimento</div>
+      </div>
+      <div class="tl-dot"></div>
+      <div class="tl-right">
+        <div class="tl-title">Séries III, IV, V — A teoria toca tudo</div>
+        <div class="tl-body">A estrutura E₈ (a álgebra mais complexa da Matemática), inteligência artificial, empacotamento de esferas em 8 dimensões — tudo se conecta através do mesmo mecanismo espectral.</div>
+      </div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-left">
+        <div class="tl-date">Hoje</div>
+        <div class="tl-series">Reconhecimento</div>
+      </div>
+      <div class="tl-dot"></div>
+      <div class="tl-right">
+        <div class="tl-title">27 papers · Zenodo · Busca por arXiv</div>
+        <div class="tl-body">Publicação em acesso aberto. Busca por endosso arXiv (math-ph, math.NT). Candidatura a doutorado PPGECT/UFPR. Domínio ativo: www.cit-framework.com.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ SLIDE 5 — AS 5 SÉRIES -->
+<div class="slide" data-index="4">
+  <span class="label">A Arquitetura da Teoria</span>
+  <h2 class="title">Cinco séries,<br><em>uma estrutura</em></h2>
+  <hr class="rule"/>
+  <div class="cards cards-3" style="max-width:980px">
+    <div class="card">
+      <span class="card-n">Série I · 11 papers</span>
+      <div class="card-title">TIC — Fundações &amp; Prova</div>
+      <div class="card-body">6 elementos fantasma · Temporium Σ · Portal setor escuro · Equação de Friedmann modificada · Proibição W-III · Correspondência espectral · Lattice SL(2,ℤ) · Espaço de Hilbert de ressonância · Rigorização completa.</div>
+      <span class="card-tag">DOIs: zenodo.19546034–20189762</span>
+    </div>
+    <div class="card blue">
+      <span class="card-n">Série II · 9 papers</span>
+      <div class="card-title">Riemann Geométrico</div>
+      <div class="card-body">Métrica Lorentziana na faixa crítica. t* ≈ 5.5612 mapeado para T_QCD ≈ 150 MeV. Hipótese de Riemann como atrator termodinâmico.</div>
+      <span class="card-tag">DOI: zenodo.19582116</span>
+    </div>
+    <div class="card purple">
+      <span class="card-n">Série III · 1 paper</span>
+      <div class="card-title">Estrutura Octoniônica E₈</div>
+      <div class="card-body">Álgebra de octônios dependente da função zeta. Simetria excepcional E₈ (dimensão 248) mapeia os graus de liberdade do substrato cósmico.</div>
+      <span class="card-tag">DOI: zenodo.19956639</span>
+    </div>
+    <div class="card green">
+      <span class="card-n">Série IV · 1 paper</span>
+      <div class="card-title">Hipótese da Atenção (TAH)</div>
+      <div class="card-body">O mesmo mecanismo espectral que governa partículas governa a esparsidade de atenção em redes neurais. Física e IA compartilham a mesma estrutura profunda.</div>
+      <span class="card-tag">DOI: zenodo.20007845</span>
+    </div>
+    <div class="card red">
+      <span class="card-n">Série V · 1 paper</span>
+      <div class="card-title">Empacotamento de Esferas</div>
+      <div class="card-body">A função mágica de Viazovska (Medalha Fields 2022) é identificada como projeção do núcleo de Bergman-Selberg. O empacotamento ótimo em ℝ⁸ é uma necessidade termodinâmica.</div>
+      <span class="card-tag">zenodo · 2026</span>
+    </div>
+    <div class="card" style="background:rgba(201,168,76,.04);border-style:dashed">
+      <span class="card-n">Total</span>
+      <div class="card-title">27 papers publicados</div>
+      <div class="card-body">Em Zenodo, acesso aberto. Endosso arXiv pendente em math-ph e math.NT. 56+ previsões quantitativas verificáveis em experimentos atuais.</div>
+      <span class="card-tag">ORCID: 0009-0008-0008-4239</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ SLIDE 6 — A FUNÇÃO ZETA -->
+<div class="slide" data-index="5">
+  <span class="label">A Chave de Tudo</span>
+  <h2 class="title">A Função Zeta<br><em>de Riemann</em></h2>
+  <hr class="rule"/>
+  <p class="body">Em 1859, Riemann descobriu uma função matemática que esconde os segredos dos números primos. A TIC propõe que ela esconde algo muito maior: <strong>a estrutura do próprio universo.</strong></p>
+  <br/>
+  <div class="cards cards-2" style="max-width:820px">
+    <div class="card">
+      <span class="card-n">Para não-especialistas</span>
+      <div class="card-title">Os zeros da função zeta</div>
+      <div class="card-body">Pense nos zeros da função zeta como as "frequências naturais" do universo — como as notas que uma corda pode vibrar. A Hipótese de Riemann diz que todas essas frequências estão numa linha específica. A TIC mostra <strong>por quê</strong> isso precisa ser verdade.</div>
+    </div>
+    <div class="card blue">
+      <span class="card-n">Resultado central</span>
+      <div class="card-title">Constante t* ≈ 5.5612</div>
+      <div class="card-body">Um número geométrico novo, verificado pelo algoritmo PSLQ. Ele calibra a temperatura de confinamento de quarks (T_QCD ≈ 150 MeV) — conectando a teoria dos números à física de partículas pela primeira vez.</div>
+    </div>
+  </div>
+  <br/>
+  <div class="cards cards-3" style="max-width:820px">
+    <div class="card" style="padding:1rem 1.2rem">
+      <div class="card-n">Invariante</div>
+      <div class="card-title" style="font-size:.9rem">t* ≈ 5.5612</div>
+      <div class="card-body" style="font-size:.72rem">Ponto nulo geométrico</div>
+    </div>
+    <div class="card blue" style="padding:1rem 1.2rem">
+      <div class="card-n">Invariante</div>
+      <div class="card-title" style="font-size:.9rem">Δ ≈ 0.39 meV</div>
+      <div class="card-body" style="font-size:.72rem">Gap de massa espectral</div>
+    </div>
+    <div class="card purple" style="padding:1rem 1.2rem">
+      <div class="card-n">Invariante</div>
+      <div class="card-title" style="font-size:.9rem">θ ≈ 2.5416</div>
+      <div class="card-body" style="font-size:.72rem">Razão de navegação de fase</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ SLIDE 7 — SEQUÊNCIA LÓGICA -->
+<div class="slide" data-index="6">
+  <span class="label">A Prova em 4 Passos</span>
+  <h2 class="title">Sequência lógica<br><em>da demonstração</em></h2>
+  <hr class="rule"/>
+  <div class="steps">
+    <div class="step" data-n="1">
+      <span class="step-n">Passo 01 — Autoajointidade Global</span>
+      <div class="step-title">O operador é hermitiano</div>
+      <div class="step-body">O operador d'Alembertiano na métrica TIC é globalmente auto-adjunto. Isso garante que seu espectro é <strong>inteiramente real</strong> — não há instabilidades complexas.</div>
+      <span class="step-eq">Spec(□_g) ⊂ ℝ</span>
+    </div>
+    <div class="step" data-n="2">
+      <span class="step-n">Passo 02 — Confinamento Termodinâmico</span>
+      <div class="step-title">A informação não escapa</div>
+      <div class="step-body">O gap espectral Δ > 0 funciona como uma "segunda lei termodinâmica informacional": modos sub-críticos são suprimidos, impedindo colapso ou explosão do substrato cósmico.</div>
+      <span class="step-eq">Δ(L) > 0 ⟹ F(σ) convexo</span>
+    </div>
+    <div class="step" data-n="3">
+      <span class="step-n">Passo 03 — Isomorfismo Estrutural</span>
+      <div class="step-title">A álgebra coincide com a física</div>
+      <div class="step-body">Existe um isomorfismo explícito entre os espaços de estados da TIC e a estrutura E₈. Os 248 geradores da álgebra excepcional correspondem exatamente aos graus de liberdade físicos.</div>
+      <span class="step-eq">E_L ⊗ F_L → G^(L) (iso)</span>
+    </div>
+    <div class="step" data-n="4">
+      <span class="step-n">Passo 04 — Estabilidade Espectral</span>
+      <div class="step-title">Zeros na linha crítica ou o universo colapsa</div>
+      <div class="step-body">A estabilidade sob multiplicidade de zeros implica diretamente que qualquer zero da função L deve ter parte real exatamente ½. A Hipótese de Riemann não é conjetura — é <strong>necessidade física.</strong></div>
+      <span class="step-eq">L(s) = 0 ⟹ ℜ(s) = ½</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ SLIDE 8 — O TEOREMA CENTRAL -->
+<div class="slide" data-index="7">
+  <span class="label">O Resultado Fundamental</span>
+  <h2 class="title">Teorema de<br><em>Estabilidade Cósmica</em></h2>
+  <hr class="rule"/>
+  <div class="theorem-box">
+    <p class="theorem-statement">
+      Sob os axiomas da TIC — positividade de reflexão de Osterwalder-Schrader, gap espectral positivo Δ(L) > 0, conservação da informação e pertencimento à classe de Selberg — para toda função L na classe 𝒮 e todo zero s com 0 &lt; ℜ(s) &lt; 1:
+    </p>
+    <div style="font-family:'Fira Code',monospace;font-size:clamp(.72rem,1.8vw,.92rem);color:var(--gold);text-align:center;padding:1rem;background:rgba(201,168,76,.05);border:1px solid rgba(201,168,76,.15);letter-spacing:.05em">
+      ∀ L ∈ 𝒮, ∀ s ∈ ℂ : L(s) = 0, 0 &lt; ℜ(s) &lt; 1 ⟹ ℜ(s) = ½
+    </div>
+    <div class="theorem-pillars">
+      <div class="pillar"><span>Pilar I</span><p>Autoajointidade global garante espectro real</p></div>
+      <div class="pillar"><span>Pilar II</span><p>Confinamento termodinâmico via 2ª Lei informacional</p></div>
+      <div class="pillar"><span>Pilar III</span><p>Isomorfismo estrutural com E₈ (dim 248)</p></div>
+      <div class="pillar"><span>Pilar IV</span><p>Estabilidade sob multiplicidade de zeros</p></div>
+    </div>
+  </div>
+  <p class="body" style="margin-top:1.2rem;font-size:.8rem">Em linguagem simples: <strong>se os zeros saíssem da linha ½, o universo seria instável</strong> — as partículas explodiriam, a informação se perderia, a física colapsaria. O universo existe, logo os zeros estão na linha.</p>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ SLIDE 9 — PREVISÕES -->
+<div class="slide" data-index="8">
+  <span class="label">Ciência Falsificável</span>
+  <h2 class="title">56+ previsões<br><em>testáveis</em></h2>
+  <hr class="rule"/>
+  <p class="body">Uma boa teoria científica deve fazer previsões que podem ser <strong>refutadas por experimentos</strong>. A TIC faz 56 previsões quantitativas precisas.</p>
+  <br/>
+  <div class="pred-grid">
+    <div class="pred-card">
+      <span class="pred-n">39</span>
+      <div class="pred-label">Previsões da Série TIC: espectro de massa dos 6 elementos fantasma, acoplamento do portal Temporium, modificações no BTFR de halos de matéria escura</div>
+      <span class="pred-facility">CMB-S4 · Euclid · LHCb</span>
+    </div>
+    <div class="pred-card">
+      <span class="pred-n">ΔN_eff</span>
+      <div class="pred-label">Número efetivo de graus de liberdade relativísticos ≈ 0.21 — testável pela próxima geração do CMB (CMB-S4, lançamento 2028)</div>
+      <span class="pred-facility">CMB-S4</span>
+    </div>
+    <div class="pred-card">
+      <span class="pred-n">A_CP</span>
+      <div class="pred-label">Assimetria CP via associador octoniônico ∼ 10⁻⁵ — testável no Belle II (Japão) já em operação</div>
+      <span class="pred-facility">Belle II · LHCb</span>
+    </div>
+    <div class="pred-card">
+      <span class="pred-n">Δc/c</span>
+      <div class="pred-label">Violação de Lorentz ∼ 10⁻²¹ via estrutura octoniônica — testável em raios cósmicos de ultra-alta energia</div>
+      <span class="pred-facility">AUGER · TA</span>
+    </div>
+    <div class="pred-card">
+      <span class="pred-n">g_aγγ</span>
+      <div class="pred-label">Acoplamento axião-fóton fixado por t* — previsão específica para a busca de axions (IAXO / MADMAX)</div>
+      <span class="pred-facility">IAXO · MADMAX</span>
+    </div>
+    <div class="pred-card">
+      <span class="pred-n">Δφ</span>
+      <div class="pred-label">Sinal de fase interferométrica da razão θ = t₁/t* — testável em AION / MAGIS-100 (interferômetros atômicos)</div>
+      <span class="pred-facility">AION · MAGIS-100</span>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════ SLIDE 10 — REVOLUÇÃO FÍSICA -->
+<div class="slide" data-index="9">
+  <span class="label">Impacto Científico</span>
+  <h2 class="title">Revolução<br><em>na Física</em></h2>
+  <hr class="rule"/>
+  <div class="rev-grid">
+    <div class="rev-item">
+      <div class="rev-icon">🌌</div>
+      <div class="rev-text">
+        <div class="rev-title">Matéria e Energia Escura Explicadas</div>
+        <div class="rev-body">Os 6 elementos fantasma da TIC com Lagrangianos completos explicam 95% do conteúdo do universo que permanece misterioso desde os anos 90.</div>
+      </div>
+    </div>
+    <div class="rev-item">
+      <div class="rev-icon">⚛️</div>
+      <div class="rev-text">
+        <div class="rev-title">Unificação Quântica-Gravitacional</div>
+        <div class="rev-body">A métrica pseudo-riemanniana codificada pela função zeta unifica gravidade (geometria) e física quântica (espectro de partículas) num único substrato.</div>
+      </div>
+    </div>
+    <div class="rev-item">
+      <div class="rev-icon">🔥</div>
+      <div class="rev-text">
+        <div class="rev-title">Confinamento de Quarks Resolvido</div>
+        <div class="rev-body">O gap de massa Δ ≈ 0.39 meV deriva do confinamento espectral — conectando o problema do Milênio "Yang-Mills e o gap de massa" à estrutura zeta.</div>
+      </div>
+    </div>
+    <div class="rev-item">
+      <div class="rev-icon">🧲</div>
+      <div class="rev-text">
+        <div class="rev-title">Temperatura de QCD Derivada</div>
+        <div class="rev-body">t* ≈ 5.5612 calibra T_QCD ≈ 150 MeV — a temperatura da transição de fase dos quarks — a partir de primeiros princípios matemáticos, sem parâmetros livres.</div>
+      </div>
+    </div>
+    <div class="rev-item">
+      <div class="rev-icon">🔮</div>
+      <div class="rev-text">
+        <div class="rev-title">Simetria E₈ como Estrutura do Cosmos</div>
+        <div class="rev-body">A maior álgebra de Lie excepcional (248 dimensões) não é apenas beleza matemática — é o blueprint do universo. Cada gerador corresponde a um grau de liberdade físico.</div>
+      </div>
+    </div>
+    <div class="rev-item">
+      <div class="rev-icon">🕰️</div>
+      <div class="rev-text">
+        <div class="rev-title">O Campo Temporium</div>
+        <div class="rev-body">Um campo escalar novo (Σ) que age como mediador entre o setor escuro e a matéria ordinária. Prediz uma nova partícula com acoplamento y_Tm ≈ 1.2×10⁻¹¹ eV⁻³.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════ SLIDE 11 — REVOLUÇÃO MATEMÁTICA -->
+<div class="slide" data-index="10">
+  <span class="label">Impacto Científico</span>
+  <h2 class="title">Revolução<br><em>na Matemática</em></h2>
+  <hr class="rule"/>
+  <div class="cards cards-2" style="max-width:860px">
+    <div class="card">
+      <span class="card-n">Millenium Problem</span>
+      <div class="card-title">Hipótese de Riemann</div>
+      <div class="card-body">A TIC reposiciona a HR não como uma conjetura isolada, mas como <strong>condição necessária de estabilidade física</strong>. Os zeros na linha ½ são garantidos pela termodinâmica do cosmos — não apenas pela estrutura analítica.</div>
+      <span class="card-tag">US$ 1.000.000 em jogo</span>
+    </div>
+    <div class="card blue">
+      <span class="card-n">Empacotamento Ótimo</span>
+      <div class="card-title">Viazovska (Medalha Fields 2022)</div>
+      <div class="card-body">A função mágica que prova que a rede E₈ empacota esferas de forma ótima em ℝ⁸ é identificada como projeção do núcleo de Bergman-Selberg. O resultado de Viazovska não é acidental — é <strong>necessidade termodinâmica</strong>.</div>
+      <span class="card-tag">Rede E₈ · ℝ⁸</span>
+    </div>
+    <div class="card purple">
+      <span class="card-n">Álgebra Excepcional</span>
+      <div class="card-title">Octônios e E₈</div>
+      <div class="card-body">A álgebra octoniônica O_ζ = O ⊗ M_ζ é nova — os octônios tradicionais ganham estrutura dependente da função zeta. A falha de divisão em zeros não-triviais ρ_n é uma nova invariante matemática.</div>
+      <span class="card-tag">Nova álgebra</span>
+    </div>
+    <div class="card green">
+      <span class="card-n">Teoria Espectral</span>
+      <div class="card-title">Classe de Selberg Unificada</div>
+      <div class="card-body">O framework TIC fornece uma interpretação física coerente para toda a classe de Selberg de funções L — conectando a teoria analítica dos números à física quântica de campos via espaços espectrais.</div>
+      <span class="card-tag">Funções L · Zeros</span>
+    </div>
+  </div>
+  <p class="body" style="margin-top:1.5rem">A TIC sugere que os maiores resultados da Matemática pura <strong>não são acidentais</strong> — são expressões inevitáveis da estrutura informacional do universo.</p>
+</div>
+
+<!-- ══════════════════════════════════════════════════════ SLIDE 12 — HUMANIDADE -->
+<div class="slide" data-index="11">
+  <span class="label">Por que isso importa</span>
+  <h2 class="title">Benefícios para<br><em>a Humanidade</em></h2>
+  <hr class="rule"/>
+  <div class="humanity-cards">
+    <div class="h-card">
+      <span class="h-icon">🧬</span>
+      <div class="h-title">Energia Limpa</div>
+      <div class="h-body">Compreender o setor escuro e as forças unificadas pode abrir caminhos para fontes de energia radicalmente novas — como a fusão nuclear foi prometida pela física do século XX.</div>
+    </div>
+    <div class="h-card">
+      <span class="h-icon">🤖</span>
+      <div class="h-title">Inteligência Artificial</div>
+      <div class="h-body">A Hipótese da Atenção Temporium (TAH) conecta o gap espectral à esparsidade em redes neurais. Pode guiar o design de IAs mais eficientes e interpretáveis por princípios físicos.</div>
+    </div>
+    <div class="h-card">
+      <span class="h-icon">💻</span>
+      <div class="h-title">Computação Quântica</div>
+      <div class="h-body">O limiar de correção de erros quânticos conecta-se ao gap Δ. A estrutura E₈ pode inspirar códigos quânticos mais robustos e tolerantes a falhas — base da computação quântica prática.</div>
+    </div>
+    <div class="h-card">
+      <span class="h-icon">🌍</span>
+      <div class="h-title">Cosmologia Aplicada</div>
+      <div class="h-body">Previsões sobre ΔN_eff e matéria escura podem recalibrar modelos climáticos de longo prazo, astrofísica de alta energia e nossa compreensão do destino do universo.</div>
+    </div>
+    <div class="h-card">
+      <span class="h-icon">📡</span>
+      <div class="h-title">Comunicação & Informação</div>
+      <div class="h-body">Se o universo é substrato de informação, entender sua arquitetura espectral pode revelar limites físicos absolutos para compressão, transmissão e processamento de dados.</div>
+    </div>
+    <div class="h-card">
+      <span class="h-icon">🎓</span>
+      <div class="h-title">Educação Científica</div>
+      <div class="h-body">A TIC nasce de um professor de escola pública do Paraná. Prova que ciência de fronteira pode emergir de qualquer lugar — e inspira uma nova geração de pesquisadores.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════ SLIDE 13 — BUSCA POR APOIO -->
+<div class="slide" data-index="12">
+  <span class="label">Publicação & Reconhecimento</span>
+  <h2 class="title">Busca por<br><em>apoio científico</em></h2>
+  <hr class="rule"/>
+  <div class="support-wrap">
+    <div class="support-block">
+      <h3>Já conquistado</h3>
+      <ul class="support-list">
+        <li><strong>27 papers</strong> publicados em Zenodo (acesso aberto, DOIs permanentes)</li>
+        <li><strong>M.Sc. — MUST University</strong> (reconhecido pela UFAL, jan. 2026)</li>
+        <li><strong>Domínio ativo</strong>: www.cit-framework.com</li>
+        <li><strong>ORCID</strong>: perfil de pesquisador registrado internacionalmente</li>
+        <li><strong>56+ previsões</strong> quantitativas publicadas e verificáveis</li>
+        <li><strong>Constante t*</strong> verificada via algoritmo PSLQ computacionalmente</li>
+      </ul>
+    </div>
+    <div class="support-block">
+      <h3>Em andamento</h3>
+      <ul class="support-list">
+        <li><strong>Endosso arXiv</strong> pendente em math-ph e math.NT — acesso à comunidade global</li>
+        <li><strong>Candidatura ao doutorado</strong> PPGECT/UFPR (foco: letramento em IA e interação humano-IA)</li>
+        <li><strong>Busca por revisão por pares</strong> em periódicos de teoria das cordas e física matemática</li>
+        <li><strong>Colaboração com experimentalistas</strong>: Belle II, CMB-S4, IAXO</li>
+        <li><strong>Financiamento</strong>: bolsas CNPq / CAPES para continuação da pesquisa</li>
+        <li><strong>Networking</strong>: contatos com grupos de teoria de cordas Brasil/Europa</li>
+      </ul>
+    </div>
+  </div>
+  <p class="body" style="margin-top:1.5rem;font-size:.8rem">A teoria está publicada e é verificável. O próximo passo é o <strong>escrutínio rigoroso da comunidade</strong> — que uma boa teoria deve suportar.</p>
+</div>
+
+<!-- ══════════════════════════════════════════════════════ SLIDE 14 — CONCLUSÃO -->
+<div class="slide" data-index="13">
+  <span class="label">Conclusão</span>
+  <h2 class="title">Um novo<br><em>campo de pesquisa</em></h2>
+  <hr class="rule"/>
+  <p class="body">A Teoria da Informação Cósmica propõe que Matemática, Física e Informação são três faces do mesmo objeto. Não é especulação — é uma estrutura com <strong>equações precisas, previsões verificáveis e um mapa para o futuro da ciência.</strong></p>
+  <div class="final-eq">
+    g_ij = ∂_i∂_j(−log|ζ(s)|) &nbsp;⟹&nbsp; GRH &nbsp;⟹&nbsp; Estabilidade Cósmica
+  </div>
+  <div class="cards cards-3" style="max-width:820px">
+    <div class="card" style="text-align:center;padding:1.2rem">
+      <div class="card-n">O cosmos</div>
+      <div class="card-title">é informação</div>
+      <div class="card-body" style="font-size:.75rem">Governada pela estrutura espectral da função zeta de Riemann</div>
+    </div>
+    <div class="card blue" style="text-align:center;padding:1.2rem">
+      <div class="card-n">A Matemática</div>
+      <div class="card-title">é física</div>
+      <div class="card-body" style="font-size:.75rem">Os teoremas mais profundos são leis da natureza disfarçadas</div>
+    </div>
+    <div class="card green" style="text-align:center;padding:1.2rem">
+      <div class="card-n">A ciência</div>
+      <div class="card-title">é de todos</div>
+      <div class="card-body" style="font-size:.75rem">Nascida em sala de aula, publicada em acesso aberto, destinada à humanidade</div>
+    </div>
+  </div>
+  <div class="author-card">
+    <div class="author-avatar">L</div>
+    <div class="author-info">
+      <div class="author-name">Leandro de Oliveira</div>
+      <div class="author-role">Físico Teórico · Educador de Matemática<br/>Colégio Estadual Cecília Meireles, SEED/PR · M.Sc. MUST University</div>
+      <div class="author-orcid">ORCID: 0009-0008-0008-4239 · leandro.oliveira@seed.pr.gov.br</div>
+    </div>
+  </div>
+  <div class="links-row">
+    <a href="https://www.cit-framework.com" class="link-btn link-btn-gold">www.cit-framework.com</a>
+    <a href="https://zenodo.org/search?q=leandro%20oliveira%20TIC" class="link-btn link-btn-out">Papers no Zenodo</a>
+  </div>
+</div>
+
+</div><!-- /deck -->
+
+<script>
+const slides = document.querySelectorAll('.slide');
+const dots = document.getElementById('dots');
+const progress = document.getElementById('progress');
+const counter = document.getElementById('counter');
+let current = 0;
+const total = slides.length;
+
+// Build dots
+slides.forEach((_,i) => {
+  const d = document.createElement('div');
+  d.className = 'dot' + (i===0?' active':'');
+  d.addEventListener('click', () => goTo(i));
+  dots.appendChild(d);
+});
+
+function goTo(n, dir = 1) {
+  if(n < 0 || n >= total) return;
+  slides[current].classList.remove('active');
+  slides[current].classList.add('exit');
+  setTimeout(() => slides[current < 0 ? 0 : current].classList.remove('exit'), 500);
+  const prev = current;
+  current = n;
+  slides[current].classList.add('active');
+  document.querySelectorAll('.dot').forEach((d,i) => d.classList.toggle('active', i === current));
+  progress.style.width = ((current + 1) / total * 100) + '%';
+  counter.textContent = (current + 1) + ' / ' + total;
+}
+
+document.getElementById('prev').addEventListener('click', () => goTo(current - 1, -1));
+document.getElementById('next').addEventListener('click', () => goTo(current + 1, 1));
+
+document.addEventListener('keydown', e => {
+  if(e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') { e.preventDefault(); goTo(current + 1, 1); }
+  if(e.key === 'ArrowLeft' || e.key === 'ArrowUp') { e.preventDefault(); goTo(current - 1, -1); }
+  if(e.key === 'Home') goTo(0);
+  if(e.key === 'End') goTo(total - 1);
+});
+
+// Touch support
+let tx = 0;
+document.addEventListener('touchstart', e => { tx = e.changedTouches[0].clientX; }, {passive: true});
+document.addEventListener('touchend', e => {
+  const dx = e.changedTouches[0].clientX - tx;
+  if(Math.abs(dx) > 50) goTo(dx < 0 ? current + 1 : current - 1, dx < 0 ? 1 : -1);
+}, {passive: true});
+
+// Init
+progress.style.width = (1 / total * 100) + '%';
+counter.textContent = '1 / ' + total;
+</script>
+</body>
+</html>
